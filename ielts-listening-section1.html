@@ -276,20 +276,6 @@ document.getElementById('menuAddNote').addEventListener('click', () => {
             currentRange.deleteContents();
             currentRange.insertNode(sp);
             activeHighlight = sp;
-            window.getSelection().removeAllR
-});
-
-document.getElementById('menuAddNote').addEventListener('click', () => {
-    ctxMenu.style.display = 'none';
-    if (!activeHighlight) {
-        if (!currentRange) return;
-        try {
-            const sp = document.createElement('span');
-            sp.className = 'highlight';
-            sp.textContent = currentRange.toString();
-            currentRange.deleteContents();
-            currentRange.insertNode(sp);
-            activeHighlight = sp;
             window.getSelection().removeAllRanges();
             saveHighlights();
         } catch { alert('⚠️ Select smaller text please.'); return; }
