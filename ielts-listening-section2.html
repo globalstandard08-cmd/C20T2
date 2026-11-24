@@ -190,25 +190,7 @@ function saveHighlights() {
 }
 
 function loadHighlights() {
-    const saved = localStorage.getItem(`${passageId}_highlights`);
-    if (!saved) return;
-    try {
-        const data = JSON.parse(saved);
-        data.forEach(item => {
-            const temp = document.createElement('div');
-            temp.innerHTML = item.outerHTML;
-            const hl = temp.firstElementChild;
-            if (hl && hl.classList.contains('highlight')) {
-                const text = hl.textContent;
-                const span = document.createElement('span');
-                span.className = 'highlight';
-                span.textContent = text;
-                if (item.note) span.setAttribute('data-note', item.note);
-                const pArea = document.getElementById('passageArea');
-                pArea.insertBefore(span, pArea.firstChild);
-            }
-        });
-    } catch {}
+    // Don't auto-restore — prevents misplaced text bug
 }
 
 function isSelectionValid(sel) {
@@ -247,17 +229,20 @@ document.addEventListener('mousemove', e => {
     noteBox.style.left = (e.clientX - offsetX) + 'px';
     noteBox.style.top = (e.clientY - offsetY) + 'px';
 });
-document.addEventListener('mouseup', ()
-{ isDraggingNote = false; });
+document.addEventListener('mouseup', () => { isDraggingNote = false; });
 
 const ctxMenu = document.getElementById('contextMenu');
+
+// === RIGHT-CLICK MENU — FIXED ===
 document.addEventListener('contextmenu', e => {
     const sel = window.getSelection();
     const targetHl = e.target.closest('.highlight');
     ctxMenu.style.display = 'none';
+
+    // ✅ BLOCK BROWSER MENU FIRST — ALWAYS
     e.preventDefault();
+
     if (targetHl) {
-        e.preventDefault();
         activeHighlight = targetHl;
         const rc = targetHl.getBoundingClientRect();
         ctxMenu.style.left = (rc.left + window.scrollX) + 'px';
@@ -265,7 +250,6 @@ document.addEventListener('contextmenu', e => {
         ctxMenu.style.display = 'block';
         currentRange = null;
     } else if (isSelectionValid(sel)) {
-        e.preventDefault();
         currentRange = sel.getRangeAt(0).cloneRange();
         const rc = currentRange.getBoundingClientRect();
         ctxMenu.style.left = (rc.left + window.scrollX) + 'px';
@@ -274,8 +258,11 @@ document.addEventListener('contextmenu', e => {
         activeHighlight = null;
     }
 });
+
+// Hide menu when clicking elsewhere
 document.addEventListener('click', e => { if (!ctxMenu.contains(e.target)) ctxMenu.style.display = 'none'; });
 
+// === MENU OPTIONS ===
 document.getElementById('menuHighlight').addEventListener('click', () => {
     if (!currentRange) return;
     try {
@@ -289,6 +276,7 @@ document.getElementById('menuHighlight').addEventListener('click', () => {
     } catch { alert('⚠️ Select smaller text please.'); }
     ctxMenu.style.display = 'none';
 });
+
 document.getElementById('menuAddNote').addEventListener('click', () => {
     ctxMenu.style.display = 'none';
     if (!activeHighlight) {
