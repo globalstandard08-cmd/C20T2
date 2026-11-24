@@ -144,13 +144,18 @@ const passageId = 'listening-test2-section4';
 let currentRange = null;
 let activeHighlight = null;
 
+// === UPDATE STATUS — GREEN INDICATORS ===
 function updateStatus() {
     for (let q = 31; q <= 40; q++) {
         const btn = document.querySelector(`.q-indicator[data-q="${q}"]`);
         if (!btn) continue;
         const input = document.querySelector(`.answer-input[data-q="${q}"]`);
-        const hasValue = (input && input.value.trim() !== '');
-        btn.classList.toggle('answered', hasValue);
+        const hasValue = input && input.value.trim() !== '';
+        if (hasValue) {
+            btn.classList.add('answered');
+        } else {
+            btn.classList.remove('answered');
+        }
     }
 }
 
@@ -212,7 +217,7 @@ document.addEventListener('mouseup', () => { isDraggingNote = false; });
 
 const ctxMenu = document.getElementById('contextMenu');
 
-// === RIGHT-CLICK MENU ===
+// === RIGHT-CLICK MENU — FULLY WORKING ===
 document.addEventListener('contextmenu', e => {
     const sel = window.getSelection();
     const targetHl = e.target.closest('.highlight');
@@ -239,6 +244,7 @@ document.addEventListener('contextmenu', e => {
 
 document.addEventListener('click', e => { if (!ctxMenu.contains(e.target)) ctxMenu.style.display = 'none'; });
 
+// === MENU: HIGHLIGHT ===
 document.getElementById('menuHighlight').addEventListener('click', () => {
     if (!currentRange) return;
     try {
@@ -252,6 +258,8 @@ document.getElementById('menuHighlight').addEventListener('click', () => {
     } catch { alert('⚠️ Select smaller text please.'); }
     ctxMenu.style.display = 'none';
 });
+
+// === MENU: ADD NOTE ===
 document.getElementById('menuAddNote').addEventListener('click', () => {
     ctxMenu.style.display = 'none';
     if (!activeHighlight) {
@@ -268,8 +276,7 @@ document.getElementById('menuAddNote').addEventListener('click', () => {
         } catch { alert('⚠️ Select smaller text please.'); return; }
     }
     if (!activeHighlight.querySelector('.note-marker')) {
-        const m = document.createElement('span
-');
+        const m = document.createElement('span');
         m.className = 'note-marker';
         m.textContent = '!';
         activeHighlight.appendChild(m);
@@ -282,6 +289,7 @@ document.getElementById('menuAddNote').addEventListener('click', () => {
     noteText.focus();
 });
 
+// === MENU: REMOVE HIGHLIGHT & NOTE ===
 document.getElementById('menuRemove').addEventListener('click', () => {
     ctxMenu.style.display = 'none';
     noteBox.style.display = 'none';
@@ -295,6 +303,7 @@ document.getElementById('menuRemove').addEventListener('click', () => {
     saveHighlights();
 });
 
+// === CLEAR ALL ===
 function clearAll() {
     if (!confirm('⚠️ Clear all answers and highlights? This cannot be undone.')) return;
     for (let q = 31; q <= 40; q++) {
@@ -310,8 +319,8 @@ function clearAll() {
     updateStatus();
 }
 
+// === LOAD SAVED ANSWERS & INITIALIZE ===
 document.addEventListener('DOMContentLoaded', () => {
-    // Load answers — text inputs (31-40)
     document.querySelectorAll('.answer-input').forEach(inp => {
         const q = inp.dataset.q;
         inp.value = localStorage.getItem(`${STORAGE_KEY}_q${q}`) || '';
