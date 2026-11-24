@@ -255,6 +255,7 @@ document.addEventListener('contextmenu', e => {
     const sel = window.getSelection();
     const targetHl = e.target.closest('.highlight');
     ctxMenu.style.display = 'none';
+    e.preventDefault();
     if (targetHl) {
         e.preventDefault();
         activeHighlight = targetHl;
