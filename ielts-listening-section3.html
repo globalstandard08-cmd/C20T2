@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Listening — Test 2 — Section 3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+        body { background-color: #f4f6f9; padding: 20px; line-height: 1.7; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; }
+        .header-bar { background-color: #1f3a5f; color: white; padding: 15px 25px; font-size: 18px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .content { padding: 25px 30px; }
+        h2 { color: #1f3a5f; margin: 0 0 20px; font-size: 22px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+        .instruction { background-color: #f8fbfe; border-left: 4px solid #1f3a5f; padding: 15px; margin-bottom: 25px; border-radius: 4px; font-weight: 500; }
+        .answer-input { width: 50px; padding: 4px 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; outline: none; transition: border-color 0.2s; text-align: center; text-transform: uppercase; }
+        .answer-input:focus { border-color: #1f3a5f; box-shadow: 0 0 0 2px rgba(31,58,95,0.15); }
+        .highlight { background-color: #ffd700; padding: 2px 4px; border-radius: 2px; cursor: pointer; display: inline; position: relative; transition: background-color 0.2s; }
+        .highlight:hover { background-color: #ffeb3b; }
+        .note-marker { position: absolute; top: -8px; right: -8px; width: 18px; height: 18px; background: #1f3a5f; color: white; border-radius: 50%; font-size: 11px; font-weight: bold; display: flex; align-items: center; justify-content: center; z-index: 10; }
+        .context-menu { position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 12px rgba(0,0,0,0.15); z-index: 9999; display: none; min-width: 180px; }
+        .context-menu div { padding: 10px 14px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f0f0f0; }
+        .context-menu div:last-child { border-bottom: none; }
+        .context-menu div:hover { background: #f0f0f0; }
+        .note-box { position: absolute; width: 260px; min-height: 80px; background: #fffde7; border: 1px solid #f9d423; border-radius: 6px; box-shadow: 0 3px 10px rgba(0,0,0,0.15); z-index: 9990; display: none; }
+        .note-header { background: #f9d423; padding: 6px 10px; font-size: 13px; font-weight: bold; cursor: move; display: flex; justify-content: space-between; align-items: center; color: #333; }
+        .note-close { cursor: pointer; font-weight: bold; font-size: 16px; line-height: 1; }
+        .note-textarea { width: 100%; min-height: 60px; border: none; padding: 10px; font-size: 14px; resize: vertical; background: transparent; outline: none; }
+        .question-status { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin: 30px 0 15px; padding: 12px 15px; background: #f0f2f5; border-radius: 4px; border: 1px solid #d0d5dd; }
+        .part-label { font-size: 11px; font-weight: 600; color: #1f3a5f; margin-right: 4px; margin-left: 8px; }
+        .q-indicator { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 3px; border: 1px solid #ddd; background: #e5e7eb; color: #333; font-size: 11px; cursor: pointer; transition: all 0.2s; }
+        .q-indicator.answered { background: #10b981; color: white; border-color: #10b981; }
+        .clear-btn { background-color: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .clear-btn:hover { background-color: #b91c1c; }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; }
+        .back-main-btn { background-color: #6b7280; color: white; border: none; padding: 10px 18px; border-radius: 4px; font-size: 15px; text-decoration: none; display: inline-block; }
+        .back-main-btn:hover { background-color: #4b5563; }
+        .next-btn { background-color: #10b981; color: white; border: none; padding: 10px 18px; border-radius: 4px; font-size: 15px; text-decoration: none; display: inline-block; }
+        .next-btn:hover { background-color: #059669; }
+        p { margin-bottom: 10px; }
+        ul { list-style: none; margin-left: 0; }
+        .two-column { display: flex; flex-wrap: wrap; gap: 25px; margin-bottom: 30px; }
+        .col-left { flex: 1; min-width: 300px; }
+        .col-right { flex: 1; min-width: 300px; background: #f8fbfe; border: 1px solid #d0d5dd; border-radius: 6px; padding: 15px; }
+        label { cursor: pointer; margin-right: 20px; }
+    </style>
+</head>
+<body>
+    <div class="context-menu" id="contextMenu">
+        <div id="menuHighlight">🖍️ Highlight</div>
+        <div id="menuAddNote">📝 Add Note</div>
+        <div id="menuRemove">❌ Remove Highlight & Note</div>
+    </div>
+    <div class="note-box" id="noteBox">
+        <div class="note-header" id="noteDragHandle">
+            <span>📝 Note</span>
+            <span class="note-close" id="noteClose">×</span>
+        </div>
+        <textarea class="note-textarea" id="noteText" placeholder="Type your note here…"></textarea>
+    </div>
+    <div class="container">
+        <div class="header-bar">
+            <span>LISTENING — TEST 2 — SECTION 3</span>
+            <span style="font-size:15px; opacity:0.9;">Exam Mode</span>
+        </div>
+        <div class="content" id="passageArea">
+
+<h2>PART 3 — Questions 21–30</h2>
+
+<div class="instruction">
+    <strong>Questions 21–25</strong><br>
+    What is Rosie and Colin's opinion about each of the following aspects of human geography?<br>
+    Choose <strong>FIVE</strong> answers from the box and write the correct letter, <strong>A-G</strong>, next to Questions 21–25.
+</div>
+
+<div class="two-column">
+    <div class="col-left">
+        <p style="font-weight:bold; margin-bottom:8px;">Aspects of human geography</p>
+        <ul style="line-height:2.3;">
+            <li><strong>21.</strong> Population &nbsp; <input type="text" class="answer-input" data-q="21" maxlength="1" autocomplete="off" spellcheck="false"></li>
+            <li><strong>22.</strong> Health &nbsp; <input type="text" class="answer-input" data-q="22" maxlength="1" autocomplete="off" spellcheck="false"></li>
+            <li><strong>23.</strong> Economies &nbsp; <input type="text" class="answer-input" data-q="23" maxlength="1" autocomplete="off" spellcheck="false"></li>
+            <li><strong>24.</strong> Culture &nbsp; <input type="text" class="answer-input" data-q="24" maxlength="1" autocomplete="off" spellcheck="false"></li>
+            <li><strong>25.</strong> Poverty &nbsp; <input type="text" class="answer-input" data-q="25" maxlength="1" autocomplete="off" spellcheck="false"></li>
+        </ul>
+    </div>
+    <div class="col-right">
+        <p style="font-weight:bold; margin-bottom:8px;">Opinions</p>
+        <ul style="line-height:2;">
+            <li><strong>A</strong> &nbsp; The information given about this was too vague.</li>
+            <li><strong>B</strong> &nbsp; This may not be relevant to their course.</li>
+            <li><strong>C</strong> &nbsp; This will involve only a small number of statistics.</li>
+            <li><strong>D</strong> &nbsp; It will be easy to find facts about this.</li>
+            <li><strong>E</strong> &nbsp; The facts about this may not be reliable.</li>
+            <li><strong>F</strong> &nbsp; No useful research has been done on this.</li>
+            <li><strong>G</strong> &nbsp; The information provided about this was interesting.</li>
+        </ul>
+    </div>
+</div>
+
+<div class="instruction">
+    <strong>Questions 26–30</strong><br>
+    Choose the correct letter, <strong>A, B or C</strong>.
+</div>
+
+<ul style="line-height:2.3; margin-bottom:25px;">
+    <li><strong>26.</strong> Rosie says that in her own city the main problem is<br>
+        <span style="margin-left:22px;">
+            <label><input type="radio" name="q26" value="A" data-q="26"> A. crime.</label>
+            <label><input type="radio" name="q26" value="B" data-q="26"> B. housing.</label>
+            <label><input type="radio" name="q26" value="C" data-q="26"> C. unemployment.</label>
+        </span>
+    </li>
+    <li><strong>27.</strong> What recent additions to the outskirts of their cities are both students happy about?<br>
+        <span style="margin-left:22px;">
+            <label><input type="radio" name="q27" value="A" data-q="27"> A. conference centres</label>
+            <label><input type="radio" name="q27" value="B" data-q="27"> B. sports centres</label>
+            <label><input type="radio" name="q27" value="C" data-q="27"> C. retail centres</label>
+        </span>
+    </li>
+    <li><strong>28.</strong> The students agree that developing disused industrial sites may<br>
+        <span style="margin-left:22px;">
+            <label><input type="radio" name="q28" value="A" data-q="28"> A. have unexpected costs.</label>
+            <label><input type="radio" name="q28" value="B" data-q="28"> B. damage the urban environment.</label>
+            <label><input type="radio" name="q28" value="C" data-q="28"> C. destroy valuable historical buildings.</label>
+        </span>
+    </li>
+    <li><strong>29.</strong> The students will mention Masdar City as an example of an attempt to achieve<br>
+        <span style="margin-left:22px;">
+            <label><input type="radio" name="q29" value="A" data-q="29"> A. daily collections for waste recycling.</label>
+            <label><input type="radio" name="q29" value="B" data-q="29"> B. sustainable energy use.</label>
+            <label><input type="radio" name="q29" value="C" data-q="29"> C. free transport for everyone.</label>
+        </span>
+    </li>
+    <li><strong>30.</strong> When discussing the Eco town of Greenhill Abbots, Colin is uncertain about<br>
+        <span style="margin-left:22px;">
+            <label><input type="radio" name="q30" value="A" data-q="30"> A. what its objectives were.</label>
+            <label><input type="radio" name="q30" value="B" data-q="30"> B. why there was opposition to it.</label>
+            <label><input type="radio" name="q30" value="C" data-q="30"> C. how much of it has actually been built.</label>
+        </span>
+    </li>
+</ul>
+
+<div class="question-status">
+    <span class="part-label">Section 3</span>
+    <div class="q-indicator" data-q="21">21</div>
+    <div class="q-indicator" data-q="22">22</div>
+    <div class="q-indicator" data-q="23">23</div>
+    <div class="q-indicator" data-q="24">24</div>
+    <div class="q-indicator" data-q="25">25</div>
+    <div class="q-indicator" data-q="26">26</div>
+    <div class="q-indicator" data-q="27">27</div>
+    <div class="q-indicator" data-q="28">28</div>
+    <div class="q-indicator" data-q="29">29</div>
+    <div class="q-indicator" data-q="30">30</div>
+</div>
+
+<button class="clear-btn" onclick="clearAll()">🗑️ Clear All Answers & Highlights</button>
+<div class="nav-container">
+    <a href="ielts-listening-section2.html" class="back-main-btn">← Previous: Section 2</a>
+    <a href="#" class="next-btn">Next: Section 4 →</a>
+</div>
+
+        </div>
+    </div>
+<script>
+const STORAGE_KEY = 'Cambridge20_Test2_Listening';
+const passageId = 'listening-test2-section3';
+let currentRange = null;
+let activeHighlight = null;
+
+function updateStatus() {
+    for (let q = 21; q <= 30; q++) {
+        const btn = document.querySelector(`.q-indicator[data-q="${q}"]`);
+        if (!btn) continue;
+        const input = document.querySelector(`.answer-input[data-q="${q}"]`);
+        const radio = document.querySelector(`input[type="radio"][data-q="${q}"]:checked`);
+        const hasValue = (input && input.value.trim() !== '') || !!radio;
+        btn.classList.toggle('answered', hasValue);
+    }
+}
+
+function saveAnswer(q, val) {
+    localStorage.setItem(`${STORAGE_KEY}_q${q}`, val);
+    updateStatus();
+}
+
+function saveHighlights() {
+    const highlights = document.querySelectorAll('#passageArea .highlight');
+    const data = Array.from(highlights).map(h => ({
+        outerHTML: h.outerHTML,
+        note: h.getAttribute('data-note') || ''
+    }));
+    localStorage.setItem(`${passageId}_highlights`, JSON.stringify(data));
+}
+
+function loadHighlights() {
+    // Don't auto-restore — prevents misplaced text bug
+}
+
+function isSelectionValid(sel) {
+    if (!sel || sel.isCollapsed || !sel.toString().trim()) return false;
+    try {
+        const r = sel.getRangeAt(0);
+        const p = r.commonAncestorContainer.nodeType === Node.TEXT_NODE
+            ? r.commonAncestorContainer.parentElement : r.commonAncestorContainer;
+        const inArea = document.getElementById('passageArea').contains(p);
+        const inInput = p.closest('input,textarea,button,select,.context-menu,.note-box,label');
+        return inArea && !inInput;
+    } catch { return false; }
+}
+
+const noteBox = document.getElementById('noteBox');
+const noteText = document.getElementById('noteText');
+const noteClose = document.getElementById('noteClose');
+let isDraggingNote = false, offsetX = 0, offsetY = 0;
+
+noteClose.addEventListener('click', () => { noteBox.style.display = 'none'; activeHighlight = null; });
+noteText.addEventListener('input', () => {
+    if (activeHighlight) {
+        activeHighlight.setAttribute('data-note', noteText.value);
+        saveHighlights();
+    }
+});
+document.addEventListener('mousedown', e => {
+    if (!e.target.closest('.note-header')) return;
+    isDraggingNote = true;
+    const rc = noteBox.getBoundingClientRect();
+    offsetX = e.clientX - rc.left;
+    offsetY = e.clientY - rc.top;
+});
+document.addEventListener('mousemove', e => {
+    if (!isDraggingNote) return;
+    noteBox.style.left = (e.clientX - offsetX) + 'px';
+    noteBox.style.top = (e.clientY - offsetY) + 'px';
+});
+document.addEventListener('mouseup', () => { isDraggingNote = false; });
+
+const ctxMenu = document.getElementById('contextMenu');
+
+// === RIGHT-CLICK MENU ===
+document.addEventListener('contextmenu', e => {
+    const sel = window.getSelection();
+    const targetHl = e.target.closest('.highlight');
+    ctxMenu.style.display = 'none';
+
+    e.preventDefault();
+
+    if (targetHl) {
+        activeHighlight = targetHl;
+        const rc = targetHl.getBoundingClientRect();
+        ctxMenu.style.left = (rc.left + window.scrollX) + 'px';
+        ctxMenu.style.top = (rc.bottom + window.scrollY + 5) + 'px';
+        ctxMenu.style.display =
+ 'block';
+        currentRange = null;
+    } else if (isSelectionValid(sel)) {
+        currentRange = sel.getRangeAt(0).cloneRange();
+        const rc = currentRange.getBoundingClientRect();
+        ctxMenu.style.left = (rc.left + window.scrollX) + 'px';
+        ctxMenu.style.top = (rc.bottom + window.scrollY + 5) + 'px';
+        ctxMenu.style.display = 'block';
+        activeHighlight = null;
+    }
+});
+
+document.addEventListener('click', e => { if (!ctxMenu.contains(e.target)) ctxMenu.style.display = 'none'; });
+
+document.getElementById('menuHighlight').addEventListener('click', () => {
+    if (!currentRange) return;
+    try {
+        const sp = document.createElement('span');
+        sp.className = 'highlight';
+        sp.textContent = currentRange.toString();
+        currentRange.deleteContents();
+        currentRange.insertNode(sp);
+        window.getSelection().removeAllRanges();
+        saveHighlights();
+    } catch { alert('⚠️ Select smaller text please.'); }
+    ctxMenu.style.display = 'none';
+});
+document.getElementById('menuAddNote').addEventListener('click', () => {
+    ctxMenu.style.display = 'none';
+    if (!activeHighlight) {
+        if (!currentRange) return;
+        try {
+            const sp = document.createElement('span');
+            sp.className = 'highlight';
+            sp.textContent = currentRange.toString();
+            currentRange.deleteContents();
+            currentRange.insertNode(sp);
+            activeHighlight = sp;
+            window.getSelection().removeAllRanges();
+            saveHighlights();
+        } catch { alert('⚠️ Select smaller text please.'); return; }
+    }
+    if (!activeHighlight.querySelector('.note-marker')) {
+        const m = document.createElement('span');
+        m.className = 'note-marker';
+        m.textContent = '!';
+        activeHighlight.appendChild(m);
+    }
+    const rc = activeHighlight.getBoundingClientRect();
+    noteBox.style.left = (rc.right + window.scrollX + 10) + 'px';
+    noteBox.style.top = (rc.top + window.scrollY) + 'px';
+    noteBox.style.display = 'block';
+    noteText.value = activeHighlight.getAttribute('data-note') || '';
+    noteText.focus();
+});
+
+document.getElementById('menuRemove').addEventListener('click', () => {
+    ctxMenu.style.display = 'none';
+    noteBox.style.display = 'none';
+    if (!activeHighlight) return;
+    activeHighlight.parentNode.replaceChild(
+        document.createTextNode(activeHighlight.textContent),
+        activeHighlight
+    );
+    activeHighlight.parentNode.normalize();
+    activeHighlight = null;
+    saveHighlights();
+});
+
+function clearAll() {
+    if (!confirm('⚠️ Clear all answers and highlights? This cannot be undone.')) return;
+    for (let q = 21; q <= 30; q++) {
+        localStorage.removeItem(`${STORAGE_KEY}_q${q}`);
+    }
+    localStorage.removeItem(`${passageId}_highlights`);
+    document.querySelectorAll('.answer-input').forEach(i => i.value = '');
+    document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    document.querySelectorAll('.highlight').forEach(h => {
+        h.parentNode.replaceChild(document.createTextNode(h.textContent), h);
+        h.parentNode.normalize();
+    });
+    noteBox.style.display = 'none';
+    updateStatus();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Load answers — letter inputs (21-25)
+    document.querySelectorAll('.answer-input').forEach(inp => {
+        const q = inp.dataset.q;
+        inp.value = localStorage.getItem(`${STORAGE_KEY}_q${q}`) || '';
+        inp.addEventListener('input', () => {
+            saveAnswer(q, inp.value.toUpperCase());
+        });
+    });
+
+    // Load answers — radio buttons (26-30)
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        const q = radio.dataset.q;
+        const saved = localStorage.getItem(`${STORAGE_KEY}_q${q}`);
+        radio.checked = (radio.value === saved);
+        radio.addEventListener('change', () => {
+            saveAnswer(q, radio.value);
+        });
+    });
+
+    updateStatus();
+    loadHighlights();
+});
+</script>
+</body>
+</html>
