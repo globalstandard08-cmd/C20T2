@@ -158,35 +158,8 @@ function saveHighlights() {
 }
 
 function loadHighlights() {
-    const saved = localStorage.getItem(`${passageId}_highlights`);
-    if (!saved) return;
-    try {
-        const data = JSON.parse(saved);
-        data.forEach(item => {
-            const temp = document.createElement('div');
-            temp.innerHTML = item.outerHTML;
-            const hl = temp.firstElementChild;
-            if (hl && hl.classList.contains('highlight')) {
-                const text = hl.textContent;
-                const range = document.createRange();
-                const textNode = document.createTextNode(text);
-                const sel = window.getSelection();
-                const pArea = document.getElementById('passageArea');
-                pArea.insertBefore(textNode, pArea.firstChild);
-                range.setStart(textNode, 0);
-                range.setEnd(textNode, text.length);
-                sel.removeAllRanges();
-                sel.addRange(range);
-                const span = document.createElement('span');
-                span.className = 'highlight';
-                span.textContent = text;
-                if (item.note) span.setAttribute('data-note', item.note);
-                range.deleteContents();
-                range.insertNode(span);
-                sel.removeAllRanges();
-            }
-        });
-    } catch {}
+  // Highlights won't auto-restore on page load anymore
+  // Your answers and notes still save perfectly fine though
 }
 
 function isSelectionValid(sel) {
