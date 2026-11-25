@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Answers — Cambridge 20 Test 2</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f4f6f9; padding: 20px; line-height: 1.7; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 30px; }
+        h1 { color: #1f3a5f; margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        h2 { color: #1f3a5f; margin: 30px 0 15px; font-size: 20px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        h3 { margin: 15px 0 8px; font-size: 16px; color: #444; }
+        .answer-row { display: flex; padding: 10px 12px; border-bottom: 1px solid #eee; align-items: center; }
+        .q-num { width: 50px; font-weight: bold; color: #1f3a5f; flex-shrink: 0; }
+        .user-ans { flex: 1; padding: 8px 12px; background: #e6f0ff; border-radius: 4px; }
+        .empty { color: #999; font-style: italic; }
+        .writing-box { padding: 15px; background: #f9f9f9; border-radius: 6px; margin: 10px 0; white-space: pre-wrap; min-height: 120px; border: 1px solid #e0e0e0; line-height: 1.8; }
+        .nav { margin-top: 30px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        .btn { padding: 10px 18px; border-radius: 4px; text-decoration: none; font-weight: bold; border: none; cursor: pointer; font-size: 15px; }
+        .back { background: #6b7280; color: white; }
+        .print { background: #1f3a5f; color: white; }
+        .download { background: #10b981; color: white; }
+        .clear { background: #dc2626; color: white; }
+        .clear:hover { background: #b91c1c; }
+        /* Hidden debug — remove if you don't need it */
+        .debug { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Your Answers — Cambridge 20 Test 2</h1>
+
+        <!-- LISTENING -->
+        <h2>🎧 Listening</h2>
+        <h3>Part 1 — Questions 1–10</h3>
+        <div id="listening-p1"></div>
+        <h3>Part 2 — Questions 11–20</h3>
+        <div id="listening-p2"></div>
+        <h3>Part 3 — Questions 21–30</h3>
+        <div id="listening-p3"></div>
+        <h3>Part 4 — Questions 31–40</h3>
+        <div id="listening-p4"></div>
+
+        <!-- READING -->
+        <h2>📖 Reading</h2>
+        <h3>Passage 1 — Questions 1–13</h3>
+        <div id="reading-p1"></div>
+        <h3>Passage 2 — Questions 14–26</h3>
+        <div id="reading-p2"></div>
+        <h3>Passage 3 — Questions 27–40</h3>
+        <div id="reading-p3"></div>
+
+        <!-- WRITING -->
+        <h2>✍️ Writing</h2>
+        <h3>Task 1</h3>
+        <div id="writing-task1" class="writing-box"></div>
+        <h3>Task 2</h3>
+        <div id="writing-task2" class="writing-box"></div>
+
+        <div class="nav">
+            <a href="index.html" class="btn back">← Home</a>
+            <a href="writing-task2.html" class="btn back">← Task 2</a>
+            <button class="btn download" onclick="downloadAnswers()">⬇️ Download (.txt)</button>
+            <button class="btn clear" onclick="clearAllData()">🗑️ Clear All</button>
+            <a href="#" class="btn print" onclick="window.print()">🖨️ Print / PDF</a>
+        </div>
+
+        <div class="debug" id="debug-info"></div>
+    </div>
+
+<script>
+// ==============================================
+// UPDATED FOR: Cambridge 20 Test 2
+// ==============================================
+const LISTENING_PREFIX = 'Cambridge20_Test2_Listening';
+const READING_PREFIX   = 'Cambridge20_Test2_Reading';
+const WRITING_T1_KEY   = 'Cambridge20_Test2_Writing_Task1_writingTask1';
+const WRITING_T2_KEY   = 'Cambridge20_Test2_Writing_Task2_writingTask2';
+
+const ALL_KEYS = Object.keys(localStorage).filter(k => k.startsWith('Cambridge20_Test2'));
+
+// Get answer by prefix + question number
+function getAnswer(prefix, qNum) {
+    const val = localStorage.getItem(`${prefix}_q${qNum}`);
+    return val ? val.trim() : '';
+}
+
+// Build answer row — matches your format exactly
+function makeRow(qNum, answer) {
+    const display = answer ? answer : '<span class="empty">— No answer —</span>';
+    return `<div class="answer-row">
+        <span class="q-num">${qNum}</span>
+        <span class="user-ans"><strong>Your Answer:</strong> ${display}</span>
+    </div>`;
+}
+
+// Render section
+function renderSection(containerId, prefix, start, end) {
+    const container = document.getElementById(containerId);
+    let html = '';
+    for (let q = start; q <= end; q++) {
+        html += makeRow(q, getAnswer(prefix, q));
+    }
+    container.innerHTML = html;
+}
+
+// Render writing
+function renderWriting(containerId, key) {
+    const container = document.getElementById(containerId);
+    const content = localStorage.getItem(key);
+    container.innerHTML = content ? content.trim() : '<span class="empty">— No response saved —</span>';
+}
+
+// Download
+function downloadAnswers() {
+    let text = 'YOUR ANSWERS — Cambridge 20 Test 2\n';
+    text += 'Generated: ' + new Date().toLocaleString() + '\n';
+    text += '='.repeat(55) + '\n\n';
+
+    text += '🎧 LISTENING\n' + '-'.repeat(35) + '\n';
+    for (let q = 1; q <= 40; q++) {
+        text += `Q${String(q).padStart(2,' ')}: ${getAnswer(LISTENING_PREFIX, q) || '—'}\n`;
+    }
+
+    text += '\n📖 READING\n' + '-'.repeat(35) + '\n';
+    for (let q = 1; q <= 40; q++) {
+        text += `Q${String(q).padStart(2,' ')}: ${getAnswer(READING_PREFIX, q) || '—'}\n`;
+    }
+
+    text += '\n✍️ WRITING\n' + '-'.repeat(35) + '\n';
+    text += 'Task 1:\n' + (localStorage.getItem(WRITING_T1_KEY) || '—') + '\n\n';
+    text += 'Task 2:\n' + (localStorage.getItem(WRITING_T2_KEY) || '—') + '\n';
+
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Cambridge20_Test2_Answers.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// Clear
+function clearAllData() {
+    if (!confirm('⚠️ Clear ALL answers for Cambridge 20 Test 2?\nThis cannot be undone.')) return;
+    ALL_KEYS.forEach(k => localStorage.removeItem(k));
+    alert('✅ All answers cleared.');
+    location.reload();
+}
+
+// Load everything
+document.addEventListener('DOMContentLoaded', () => {
+    // Listening — all 4 parts
+    renderSection('listening-p1', LISTENING_PREFIX, 1, 10);
+    renderSection('listening-p2', LISTENING_PREFIX, 11, 20);
+    renderSection('listening-p3', LISTENING_PREFIX, 21, 30);
+    renderSection('listening-p4', LISTENING_PREFIX, 31, 40);
+
+    // Reading — all 3 passages
+    renderSection('reading-p1', READING_PREFIX, 1, 13);
+    renderSection('reading-p2', READING_PREFIX, 14, 26);
+    renderSection('reading-p3', READING_PREFIX, 27, 40);
+
+    // Writing
+    renderWriting('writing-task1', WRITING_T1_KEY);
+    renderWriting('writing-task2', WRITING_T2_KEY);
+});
+</script>
+</body>
+</html>
