@@ -279,20 +279,20 @@
                 </table>
             </div>
 
-                        <div class="questions-block" id="summaryArea">
+                       <div class="questions-block" id="summaryArea">
                 <h3>Questions 17–22</h3>
                 <div class="instruction">Complete the summary below.<br>Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</div>
 
                 <h4 style="margin:16px 0 8px; color:#1f3a5f; font-size:16px; font-weight:bold;">What makes us procrastinate?</h4>
 
                 <div class="summary-text">
-                Many people think that procrastination is the result of (17)<input type="text" class="answer-gap" id="ans17" data-q="17">. Others believe it to be the result of an inability to organise time efficiently.<br>
-                But scientific studies suggest that procrastination is actually due to poor mood management. The tasks we are most likely to put off are those that could damage our self-esteem or cause us to feel (18) <input type="text" class="answer-gap" id="ans18" data-q="18"> when we think about them. Research comparing chronic procrastinators with other people even found differences in the brain regions associated with regulating emotions and identifying (19)<input type="text" class="answer-gap" id="ans19" data-q="19">.<br>
-                Emotionally loaded and difficult tasks often cause us to procrastinate. Getting ready to take (20)<input type="text" class="answer-gap" id="ans20" data-q="20"> might be a typical example of one such task. People who are likely to procrastinate tend to be either (21)<input type="text" class="answer-gap" id="ans21" data-q="21"> or those with low self-esteem.
+                Many people think that procrastination is the result of <span id="q17"></span><strong>17</strong> <input type="text" class="answer-gap" id="ans17" data-q="17">. Others believe it to be the result of an inability to organise time efficiently.<br>
+                But scientific studies suggest that procrastination is actually due to poor mood management. The tasks we are most likely to put off are those that could damage our self-esteem or cause us to feel <span id="q18"></span><strong>18</strong> <input type="text" class="answer-gap" id="ans18" data-q="18"> when we think about them. Research comparing chronic procrastinators with other people even found differences in the brain regions associated with regulating emotions and identifying <span id="q19"></span><strong>19</strong> <input type="text" class="answer-gap" id="ans19" data-q="19">.<br>
+                Emotionally loaded and difficult tasks often cause us to procrastinate. Getting ready to take <span id="q20"></span><strong>20</strong> <input type="text" class="answer-gap" id="ans20" data-q="20"> might be a typical example of one such task. People who are likely to procrastinate tend to be either <span id="q21"></span><strong>21</strong> <input type="text" class="answer-gap" id="ans21" data-q="21"> or those with low self-esteem.
                 </div>
 
                 <div class="continuation-box">
-                    Procrastination is only a short-term measure for managing emotions. It's often followed by a feeling of (22)<input type="text" class="answer-gap" id="ans22" data-q="22">, which worsens our mood and leads to more procrastination.
+                    Procrastination is only a short-term measure for managing emotions. It's often followed by a feeling of <span id="q22"></span><strong>22</strong> <input type="text" class="answer-gap" id="ans22" data-q="22">, which worsens our mood and leads to more procrastination.
                 </div>
             </div>
 
@@ -465,8 +465,7 @@ document.addEventListener('mouseup', () => {
 const noteBox = document.getElementById('noteBox');
 const noteText = document.getElementById('noteText');
 const noteClose = document.getElementById('noteClose');
-const contextMenu = document.getElementById('context
-Menu');
+const contextMenu = document.getElementById('contextMenu');
 let currentRange = null, activeHighlight = null;
 const highlightAreas = ['passageArea', 'matchArea', 'summaryArea', 'mcArea', 'mcArea2'];
 
