@@ -1,439 +1,631 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IELTS Reading - Passage 3</title>
-<style>
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Reading — Invasion of the Robot Umpires</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+        html, body { background-color: #ffffff; height: 100%; overflow-y: auto; }
 
-    body {
-        background-color: #ffffff;
-        color: #000000;
-        line-height: 1.6;
-    }
+        .top-bar {
+            background-color: #ffffff;
+            padding: 10px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .logo { height: 55px; width: auto; }
 
-    /* ===== TOP NAVIGATION BAR ===== */
-    .top-nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        background-color: #f0f0f0;
-        border-bottom: 1px solid #ccc;
-        padding: 10px 20px;
-        z-index: 100;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .nav-title {
-        font-weight: bold;
-        font-size: 16px;
-    }
-
-    .nav-buttons button {
-        padding: 6px 14px;
-        margin-left: 8px;
-        border: 1px solid #666;
-        border-radius: 3px;
-        background-color: #fff;
-        cursor: pointer;
-        font-size: 14px;
-    }
-
-    .nav-buttons button:hover {
-        background-color: #e6e6e6;
-    }
-
-    .nav-buttons button.active {
-        background-color: #444;
-        color: #fff;
-    }
-
-    /* ===== HIGHLIGHT TOOL BAR ===== */
-    .tool-bar {
-        position: fixed;
-        top: 55px;
-        left: 0;
-        right: 0;
-        background-color: #f8f8f8;
-        border-bottom: 1px solid #ddd;
-        padding: 8px 20px;
-        z-index: 99;
-        display: flex;
-        gap: 10px;
-        align-items: center;
-    }
-
-    .tool-bar span {
-        font-size: 13px;
-        color: #555;
-        margin-right: 5px;
-    }
-
-    .tool-btn {
-        padding: 4px 10px;
-        border: 1px solid #bbb;
-        border-radius: 3px;
-        background: #fff;
-        cursor: pointer;
-        font-size: 13px;
-    }
-
-    .tool-btn:hover {
-        background: #eee;
-    }
-
-    .tool-btn.active {
-        background: #ffd900;
-        border-color: #e6c200;
-    }
-
-    .highlight-yellow { background-color: #fff380; }
-    .highlight-green { background-color: #b7f0b7; }
-    .highlight-pink { background-color: #ffd1e0; }
-
-    /* ===== TWO-COLUMN LAYOUT ===== */
-    .main-container {
-        display: flex;
-        gap: 20px;
-        padding: 95px 20px 20px 20px;
-        height: 100vh;
-    }
-
-    .column {
-        flex: 1;
-        border: 1px solid #aaa;
-        padding: 20px;
-        overflow-y: auto;
-        height: calc(100vh - 115px);
-        background-color: #fff;
-    }
-
-    .column h2 {
-        font-size: 17px;
-        margin-bottom: 15px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    h1 {
-        font-size: 20px;
-        text-align: center;
-        margin-bottom: 5px;
-    }
-
-    .passage-intro {
-        font-style: italic;
-        margin-bottom: 20px;
-        color: #333;
-    }
-
-    .passage-text {
-        font-size: 15px;
-        margin-bottom: 15px;
-        text-align: justify;
-    }
-
-    .question-block {
-        margin-bottom: 30px;
-    }
-
-    .question-block h3 {
-        font-size: 16px;
-        margin-bottom: 12px;
-        padding-bottom: 5px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .statement-row {
-        margin: 8px 0;
-        font-size: 15px;
-    }
-
-    .options-table {
-        margin: 10px 0;
-    }
-
-    .options-table td {
-        padding: 4px 15px 4px 0;
-        font-size: 15px;
-    }
-
-    .summary-box {
-        border: 1px dashed #888;
-        padding: 15px;
-        margin: 15px 0;
-        background-color: #fafafa;
-    }
-
-    .options-list {
-        columns: 2;
-        margin-top: 10px;
-    }
-
-    .mcq-item {
-        margin: 8px 0;
-        font-size: 15px;
-    }
-
-    /* Scrollbar styling */
-    .column::-webkit-scrollbar {
-        width: 10px;
-    }
-
-    .column::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 5px;
-    }
-
-    .column::-webkit-scrollbar-thumb {
-        background: #c1c1c1;
-        border-radius: 5px;
-    }
-
-    .column::-webkit-scrollbar-thumb:hover {
-        background: #a8a8a8;
-    }
-</style>
-</head>
-<body>
-
-<!-- TOP NAVIGATION -->
-<div class="top-nav">
-    <div class="nav-title">IELTS Academic Reading - Passage 3</div>
-    <div class="nav-buttons">
-        <button id="btn-both" class="active">Show Both</button>
-        <button id="btn-passage">Passage Only</button>
-        <button id="btn-questions">Questions Only</button>
-    </div>
-</div>
-
-<!-- HIGHLIGHT TOOLBAR -->
-<div class="tool-bar">
-    <span>Highlight:</span>
-    <button class="tool-btn" data-color="highlight-yellow">Yellow</button>
-    <button class="tool-btn" data-color="highlight-green">Green</button>
-    <button class="tool-btn" data-color="highlight-pink">Pink</button>
-    <button class="tool-btn" id="btn-remove-highlight">Remove Highlight</button>
-    <span style="margin-left:20px;">Select text → click colour to highlight</span>
-</div>
-
-<!-- MAIN TWO-COLUMN LAYOUT -->
-<div class="main-container" id="main-container">
-    <!-- ========== LEFT COLUMN: READING PASSAGE ========== -->
-    <div class="column" id="passage-col">
-        <h2>📖 Reading Passage 3</h2>
-        
-        <h1>Invasion of the Robot Umpires</h1>
-        <p class="passage-intro">You should spend about 20 minutes on Question 27-40, which are based on Reading Passage 3 below.</p>
-
-        <p class="passage-text">A few years ago, Fred DeJesus from Brooklyn, New York became the first umpire in a minor league baseball game to use something called the Automated Ball-Strike System (ABS), often referred to as the 'robot-umpire'. Instead of making any judgments himself about a strike, DeJesus had his decisions fed to him through an earpiece, connected to a modified missile-tracking system. The contraption looked like a large black box with one glowing green eye; it was mounted above the press stand.</p>
-
-        <p class="passage-text">Major League Baseball (MLB), who had commissioned the system, wanted human umpires to announce the calls, just as they would have done in the past. When the first pitch came in, a recorded voice told DeJesus it was a strike, calling it out.</p>
-
-        <p class="passage-text">Previously, a strike was a judgment call on the part of the umpire. Even if the batter does not hit it, a ball that passes through the 'strike zone' (an imaginary zone about seventeen inches wide, stretching from the batter's knees to the middle of his chest) is considered a strike. During that first game, when DeJesus announced calls, there was no heckling and no shouted disagreement. Nobody said a word.</p>
-
-        <p class="passage-text">For a hundred and fifty years or so, the strike zone has been the game's animating force—countless arguments between a team's manager and the umpire have taken place over its boundaries and whether a ball had crossed through it. The rules of play have evolved in various stages. Today, everyone knows that you may scream your disagreement in an umpire's face, but you must never shout about personal abuse at them or touch them. That's a no-no. When the robot-umpires came, however, the arguments stopped.</p>
-
-        <p class="passage-text">During the first robot-umpire season, players complained about some strange calls. In response, MLB decided to tweak the dimensions of the zone, and the following year the consensus was that ABS is profoundly consistent. MLB says the device is near-perfect, precise to within fractions of an inch. "It'll reduce controversy in the game, and be good for the game," says Rob Manfred, who is Commissioner for MLB. But the question is whether controversy is worth reducing, or whether it is the sign of a human hand.</p>
-
-        <p class="passage-text">A human, at least, yells back. When I spoke with Frank Viola, a former Carolina league team, he said that ABS works as designed, but that it was also unforgiving and pedantic, almost legalistic. "Manfred is a lawyer," Viola noted. Some pitchers have complained that, compared with a human's, the robot's strike zone seems too precise. Viola was once a major-league player himself. When he was pitching, he explained, umpires rewarded skill. "Throw it where you aimed, and it would be a strike, even if it was an inch or two outside. There was a dialogue between pitcher and umpire."</p>
-
-        <p class="passage-text">The executive tasked with running the experiment for MLB is Morgan Sword, who's in charge of baseball operations. According to Sword, ABS was part of a larger project to make baseball more exciting since executives are terrified of losing younger fans, as has been the case with horse racing and boxing. He explains how they began the process by asking fans what version of baseball they found most exciting. The results showed that everyone wanted more action: more hits, more defense, more baserunning. This type of baseball essentially hasn't existed since the 1960s, when the hundred-mile-an-hour fastball, which is difficult to hit and control, entered the game. It flattened the game into strikeouts, walks, and home runs—a type of play lacking much action.</p>
-
-        <p class="passage-text">Sword's team brainstormed potential fixes. Any rule that existed, they talked about changing—from changing the batting to changing the geometry of the field. But while all of these were ruled out as potential fixes, ABS was seen as a perfect vehicle for change. According to Sword, once you get the technology right, you can load any strike zone you want into the system. "It might be a triangle, or a blob, or something shaped like Texas. Over time, as baseball evolves, ABS can allow the zone to change with it."</p>
-
-        <p class="passage-text">"In the past twenty years, sports have moved away from judgment calls. Soccer has Video Assistant Referees (for offside decisions, for example). Tennis has Hawk-Eye (for line calls, for example). For almost a decade, baseball has used instant replay on the base paths. This is widely liked, even if the precision can sometimes cause grave problems. But these applications deal with something physical: bases, lines, goals. The boundaries of action are precise, delineated like the keys of a piano. This is not the case with ABS and the strike zone. Historically, a certain discretion has been appreciated."</p>
-
-        <p class="passage-text">I decided to email Alva Noë, a professor at Berkeley University and a baseball fan, for his opinion. "Hardly a day goes by that I don't wake up and run through the reasons that this [robot-umpire] is such a terrible idea," he replied. He later told me, "This is part of a movement to use algorithms to take the hard choices out of living. Perhaps that's what we want. We watch baseball to kill time, not to maximize it."</p>
-
-        <p class="passage-text">Some players I have met take a distancing stance toward the robots too, believing that accuracy is not the answer. According to Joe Russo, who plays for a New Jersey team, "With technology, people just want everything to be perfect. That's not reality. I think perfect would be weird. Your teams are always winning, work is always just great, there's always money in your pocket, your car never breaks down. What is there to talk about?"</p>
-
-        <p class="passage-text" style="font-size:13px; font-style:italic; margin-top:20px;">* strike: a strike is when the batter swings at a ball and misses or the batter does not swing at a ball and it passes through the strike zone.</p>
-    </div>
-    <!-- ========== RIGHT COLUMN: QUESTIONS ========== -->
-    <div class="column" id="questions-col">
-        <h2>📝 Questions</h2>
-
-        <!-- QUESTIONS 27-32: YES / NO / NOT GIVEN -->
-        <div class="question-block">
-            <h3>Questions 27-32</h3>
-            <p style="margin-bottom:10px;"><strong>Do the following statements agree with the claims of the writer in Reading Passage 3?</strong></p>
-
-            <table class="options-table">
-                <tr>
-                    <td><strong>YES</strong></td>
-                    <td>if the statement agrees with the claims of the writer</td>
-                </tr>
-                <tr>
-                    <td><strong>NO</strong></td>
-                    <td>if the statement contradicts the claims of the writer</td>
-                </tr>
-                <tr>
-                    <td><strong>NOT GIVEN</strong></td>
-                    <td>if it is impossible to say what the writer thinks about this</td>
-                </tr>
-            </table>
-
-            <div class="statement-row">
-                <strong>27.</strong> When DeJesus first used ABS, he shared decision-making about strikes with it.
-            </div>
-            <div class="statement-row">
-                <strong>28.</strong> MLB considered it necessary to amend the size of the strike zone when criticisms were received from players.
-            </div>
-            <div class="statement-row">
-                <strong>29.</strong> MLB is keen to justify the money spent on improving the accuracy of ABS's calculations.
-            </div>
-            <div class="statement-row">
-                <strong>30.</strong> The hundred-mile-an-hour fastball led to a more exciting style of play.
-            </div>
-            <div class="statement-row">
-                <strong>31.</strong> The differing proposals for alterations to the baseball bat led to fierce debate on Sword's team.
-            </div>
-            <div class="statement-row">
-                <strong>32.</strong> ABS makes changes to the shape of the strike zone feasible.
-            </div>
-        </div>
-
-        <!-- QUESTIONS 33-37: SUMMARY COMPLETION -->
-        <div class="question-block">
-            <h3>Questions 33-37</h3>
-            <p style="margin-bottom:10px;"><strong>Complete the summary using the list of phrases, A-H, below.</strong></p>
-
-            <div class="summary-box">
-                <p style="font-weight:bold; margin-bottom:10px;">Calls by the umpire</p>
-                <p>Even after ABS was developed, MLB still wanted human umpires to shout out decisions as they had in their (33) __________. The umpire's job had, at one time, required a (34) __________ about whether a ball was a strike. A ball is considered a strike when the batter does not hit it and it crosses through a (35) __________ extending approximately from the batter's knee to his chest.</
-In the past, (36) __________ over strike calls were not uncommon, but today everyone accepts the complete ban on pushing or shoving the umpire. One difference, however, is that during the first game DeJesus used ABS, strike calls were met with (37) __________.</p>
-            </div>
-
-            <p style="margin:15px 0 8px;"><strong>List of Phrases A–H</strong></p>
-            <div class="options-list">
-                <p><strong>A.</strong> pitch boundary</p>
-                <p><strong>B.</strong> numerous disputes</p>
-                <p><strong>C.</strong> team tactics</p>
-                <p><strong>D.</strong> subjective assessment</p>
-                <p><strong>E.</strong> widespread approval</p>
-                <p><strong>F.</strong> former roles</p>
-                <p><strong>G.</strong> total silence</p>
-                <p><strong>H.</strong> perceived area</p>
-            </div>
-        </div>
-
-        <!-- QUESTIONS 38-40: MULTIPLE CHOICE -->
-        <div class="question-block">
-            <h3>Questions 38-40</h3>
-            <p style="margin-bottom:10px;"><strong>Choose the correct letter, A, B, C or D.</strong></p>
-
-            <div class="mcq-item">
-                <strong>38.</strong> What does the writer suggest about ABS in the fifth paragraph?<br>
-                A. It is bound to make key decisions that are wrong.<br>
-                B. It may reduce some of the appeal of the game.<br>
-                C. It will lead to the disappearance of human umpires.<br>
-                D. It may increase calls for the rules of baseball to be changed.
-            </div>
-
-            <div class="mcq-item">
-                <strong>39.</strong> Morgan Sword says that the introduction of ABS<br>
-                A. was regarded as an experiment without a guaranteed outcome.<br>
-                B. was intended to keep up with developments in other sports.<br>
-                C. was a response to changing attitudes about the role of sport.<br>
-                D. was an attempt to ensure baseball retained a young audience.
-            </div>
-
-            <div class="mcq-item">
-                <strong>40.</strong> Why does the writer include the views of Noë and Russo?<br>
-                A. to show that attitudes to technology vary widely<br>
-                B. to argue that people have unrealistic expectations of sport<br>
-                C. to indicate that accuracy is not the same thing as enjoyment<br>
-                D. to suggest that the number of baseball fans needs to increase
-            </div>
-        </div>
-
-    </div><!-- /questions-col -->
-
-</div><!-- /main-container -->
-<script>
-    // ===== HIGHLIGHT SYSTEM =====
-    let currentHighlightClass = null;
-
-    // Highlight button click
-    document.querySelectorAll('.tool-btn[data-color]').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            currentHighlightClass = this.getAttribute('data-color');
-        });
-    });
-
-    // Remove highlight button
-    document.getElementById('btn-remove-highlight').addEventListener('click', function() {
-        currentHighlightClass = null;
-        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.highlight-yellow, .highlight-green, .highlight-pink').forEach(el => {
-            el.outerHTML = el.innerHTML;
-        });
-    });
-
-    // Apply highlight on mouseup
-    document.addEventListener('mouseup', function() {
-        if (!currentHighlightClass) return;
-
-        const selection = window.getSelection();
-        if (!selection.toString().trim()) return;
-
-        const range = selection.getRangeAt(0);
-        const span = document.createElement('span');
-        span.className = currentHighlightClass;
-
-        try {
-            range.surroundContents(span);
-        } catch (e) {
-            const fragment = range.extractContents();
-            span.appendChild(fragment);
-            range.insertNode(span);
+        .main-grid {
+            display: flex;
+            min-height: calc(100vh - 75px - 48px);
+            width: 100%;
         }
 
-        selection.removeAllRanges();
-    });
+        .passage-pane {
+            width: 50%;
+            min-width: 300px;
+            background: #ffffff;
+            overflow-y: auto;
+            padding: 25px;
+            max-height: calc(100vh - 75px - 48px);
+        }
+        .exam-title {
+            text-align: center;
+            color: #1f3a5f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #1f3a5f;
+        }
+        .instruction {
+            background-color: #f9f9f9;
+            border-left: 3px solid #1f3a5f;
+            padding: 12px;
+            margin-bottom: 18px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 15px;
+            line-height: 1.6;
+        }
 
-    // ===== NAVIGATION BUTTONS =====
-    const passageCol = document.getElementById('passage-col');
-    const questionsCol = document.getElementById('questions-col');
-    const btnBoth = document.getElementById('btn-both');
-    const btnPassage = document.getElementById('btn-passage');
-    const btnQuestions = document.getElementById('btn-questions');
+        .passage-text { font-size: 16px; line-height: 1.7; }
+        .passage-text p { margin-bottom: 14px; text-align: justify; }
+        .para-letter { font-weight: bold; color: #1f3a5f; display: inline-block; min-width: 24px; vertical-align: top; }
+        .para-content { display: inline-block; width: calc(100% - 30px); }
 
-    function setActiveNav(activeBtn) {
-        [btnBoth, btnPassage, btnQuestions].forEach(b => b.classList.remove('active'));
-        activeBtn.classList.add('active');
-    }
+        .divider {
+            width: 10px;
+            background-color: #e0e0e0;
+            cursor: col-resize;
+            flex-shrink: 0;
+            position: relative;
+            border-left: 1px solid #d0d0d0;
+            border-right: 1px solid #d0d0d0;
+            z-index: 50;
+        }
+        .divider:hover, .divider.active { background-color: #999; }
+        .divider::after {
+            content: "|||";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #666;
+            font-size: 12px;
+            letter-spacing: 0;
+            pointer-events: none;
+        }
 
-    btnBoth.addEventListener('click', function() {
-        setActiveNav(this);
-        passageCol.style.display = 'block';
-        questionsCol.style.display = 'block';
-    });
+        .questions-pane {
+            width: 50%;
+            min-width: 300px;
+            background: #ffffff;
+            overflow-y: auto;
+            padding: 25px;
+            max-height: calc(100vh - 75px - 48px);
+        }
+        .questions-block { margin-bottom: 35px; }
+        .questions-block h3 { color: #1f3a5f; margin-bottom: 10px; font-size: 18px; }
+        .q-row { display: flex; align-items: flex-start; gap: 10px; margin: 14px 0; font-size: 16px; flex-wrap: wrap; }
+        .q-row.current {
+            background-color: #eaf1fa;
+            padding: 10px 8px;
+            border-radius: 4px;
+            margin-left: -8px;
+            margin-right: -8px;
+        }
+        .q-num { font-weight: bold; min-width: 28px; color: #1f3a5f; flex-shrink: 0; }
 
-    btnPassage.addEventListener('click', function() {
-        setActiveNav(this);
-        passageCol.style.display = 'block';
-        questionsCol.style.display = 'none';
-    });
+        /* Yes/No/Not Given table */
+        .ynng-table { border-collapse: collapse; margin: 15px 0; width: 100%; }
+        .ynng-table th, .ynng-table td { border: 1px solid #ccc; padding: 10px 8px; text-align: left; font-size: 15px; }
+        .ynng-table th { background: #f5f5f5; color: #1f3a5f; text-align: center; width: 80px; }
+        .ynng-radio { width: 20px; height: 20px; cursor: pointer; accent-color: #1f3a5f; }
 
-    btnQuestions.addEventListener('click', function() {
-        setActiveNav(this);
-        passageCol.style.display = 'none';
-        questionsCol.style.display = 'block';
-    });
-</script>
+        /* Summary completion */
+        .summary-text { font-size: 16px; line-height: 2.2; }
+        .answer-gap {
+            display: inline-block;
+            border: none;
+            border-bottom: 1px solid #000;
+            width: 120px;
+            text-align: center;
+            font-size: 16px;
+            padding: 2px 4px;
+            background: transparent;
+            outline: none;
+            margin: 0 4px;
+        }
+        .answer-gap:focus { border-bottom: 2px solid #1f3a5f; background: #f5f8ff; }
+        .continuation-box {
+            background: #f0f4f9;
+            border-left: 3px solid #1f3a5f;
+            padding: 14px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+            font-size: 16px;
+            line-height: 2.2;
+        }
+        .options-list { columns: 2; margin: 15px 0; }
+        .options-list p { margin: 5px 0; font-size: 15px; }
 
+        /* Multiple choice */
+        .mc-option { display: flex; align-items: flex-start; gap: 10px; margin: 10px 0; font-size: 15px; }
+        .mc-letter { font-weight: bold; min-width: 24px; color: #1f3a5f; }
+        .mc-radio { width: 20px; height: 20px; cursor: pointer; accent-color: #1f3a5f; margin-right: 6px; }
+
+        .highlight {
+            background-color: #ffd700; padding: 1px 3px; border-radius: 2px;
+            cursor: pointer; display: inline; color: #000; position: relative;
+        }
+        .context-menu {
+            position: absolute; background: #fff; border: 1px solid #ddd;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15); z-index: 9999; display: none; min-width: 180px;
+        }
+        .context-menu div { padding: 10px 14px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f5f5f5; }
+        .context-menu div:last-child { border-bottom: none; }
+        .context-menu div:hover { background: #f5f5f5; }
+
+        .note-box {
+            position: absolute; width: 260px; min-height: 80px;
+            background: #fffde7; border: 1px solid #f9d423; border-radius: 6px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15); z-index: 9990; display: none;
+        }
+        .note-header {
+            background: #f9d423; padding: 6px 10px; cursor: move;
+            display: flex; justify-content: space-between; align-items: center; font-weight: bold;
+        }
+        .note-close { cursor: pointer; font-size: 16px; }
+        .note-textarea {
+            width: 100%; min-height: 60px; border: none; padding: 10px;
+            font-size: 14px; resize: vertical; background: transparent; outline: none;
+        }
+
+        .bottom-nav {
+            min-height: 48px; border-top: 1px solid #eee; display: flex;
+            align-items: center; justify-content: space-between; padding: 8px 15px;
+            position: sticky; bottom: 0; background: #fff; z-index: 90;
+            flex-wrap: wrap; gap: 6px 12px;
+        }
+        .nav-group { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; }
+        .part-label { font-size: 10px; color: #1f3a5f; margin: 0 4px; white-space: nowrap; }
+        .q-indicator {
+            width: 26px; height: 26px; border: 1px solid #ddd; background: #fff;
+            text-align: center; line-height: 24px; font-size: 11px; cursor: pointer; border-radius: 3px;
+        }
+        .q-indicator.current { background: #eaf1fa; border-color: #1f3a5f; border-width: 2px; font-weight: bold; }
+        .q-indicator.answered { background: #10b981; color: #fff; border-color: #10b981; }
+        .back-btn, .next-passage-btn, .clear-btn {
+            padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;
+            font-size: 14px; font-weight: bold; text-decoration: none;
+        }
+        .back-btn { background: #6b7280; color: #fff; }
+        .next-passage-btn { background: #10b981; color: #fff; white-space: nowrap; flex-shrink: 0; }
+        .clear-btn { background: #ef4444; color: #fff; margin-left: 8px; }
+    </style>
+</head>
+<body>
+    <div class="context-menu" id="contextMenu">
+        <div id="menuHighlight">🖍️ Highlight</div>
+        <div id="menuAddNote">📝 Add Note</div>
+        <div id="menuRemove">❌ Remove Highlight</div>
+    </div>
+
+    <div class="note-box" id="noteBox">
+        <div class="note-header" id="noteDragHandle">
+            <span>📝 Note</span>
+            <span class="note-close" id="noteClose">×</span>
+        </div>
+        <textarea class="note-textarea" id="noteText" placeholder="Type your note here…"></textarea>
+    </div>
+
+    <div class="top-bar">
+        <img src="ielts-logo.png" alt="IELTS Logo" class="logo">
+    </div>
+
+    <div class="main-grid" id="mainGrid">
+        <div class="passage-pane" id="passagePane">
+            <div class="exam-title">READING — CAMBRIDGE TEST</div>
+            <h2>READING PASSAGE 3</h2>
+            <div class="instruction">You should spend about 20 minutes on Questions 27–40, which are based on Reading Passage 3 below.</div>
+            <h3 style="color:#1f3a5f; margin:15px 0; font-size:22px; text-align:center;">Invasion of the Robot Umpires</h3>
+            
+            <div class="passage-text" id="passageArea">
+                <p><span class="para-letter">A</span><span class="para-content">A few years ago, Fred DeJesus from Brooklyn, New York became the first umpire in a minor league baseball game to use something called the Automated Ball-Strike System (ABS), often referred to as the 'robot-umpire'. Instead of making any judgments himself about a strike, DeJesus had his decisions fed to him through an earpiece, connected to a modified missile-tracking system. The contraption looked like a large black box with one glowing green eye; it was mounted above the press stand.</span></p>
+
+                <p><span class="para-letter">B</span><span class="para-content">Major League Baseball (MLB), who had commissioned the system, wanted human umpires to announce the calls, just as they would have done in the past. When the first pitch came in, a recorded voice told DeJesus it was a strike, calling it out.</span></p>
+
+                <p><span class="para-letter">C</span><span class="para-content">Previously, a strike was a judgment call on the part of the umpire. Even if the batter does not hit it, a ball that passes through the 'strike zone' (an imaginary zone about seventeen inches wide, stretching from the batter's knees to the middle of his chest) is considered a strike. During that first game, when DeJesus announced calls, there was no heckling and no shouted disagreement. Nobody said a word.</span></p>
+
+                <p><span class="para-letter">D</span><span class="para-content">For a hundred and fifty years or so, the strike zone has been the game's animating force—countless arguments between a team's manager and the umpire have taken place over its boundaries and whether a ball had crossed through it. The rules of play have evolved in various stages. Today, everyone knows that you may scream your disagreement in an umpire's face, but you must never shout about personal abuse at them or touch them. That's a no-no. When the robot-umpires came, however, the arguments stopped.</span></p>
+
+                <p><span class="para-letter">E</span><span class="para-content">During the first robot-umpire season, players complained about some strange calls. In response, MLB decided to tweak the dimensions of the zone, and the following year the consensus was that ABS is profoundly consistent. MLB says the device is near-perfect, precise to within fractions of an inch. "It'll reduce controversy in the game, and be good for the game," says Rob Manfred, who is Commissioner for MLB. But the question is whether controversy is worth reducing, or whether it is the sign of a human hand.</span></p>
+
+                <p><span class="para-letter">F</span><span class="para-content">A human, at least, yells back. When I spoke with Frank Viola, a former Carolina league team, he said that ABS works as designed, but that it was also unforgiving and pedantic, almost legalistic. "Manfred is a lawyer," Viola noted. Some pitchers have complained that, compared with a human's, the robot's strike zone seems too precise. Viola was once a major-league player himself. When he was pitching, he explained, umpires rewarded skill. "Throw it where you aimed, and it would be a strike, even if it was an inch or two outside. There was a dialogue between pitcher and umpire."</span></p>
+
+                <p><span class="para-letter">G</span><span class="para-content">The executive tasked with running the experiment for MLB is Morgan Sword, who's in charge of baseball operations. According to Sword, ABS was part of a larger project to make baseball more exciting since executives are terrified of losing younger fans, as has been the case with horse racing and boxing. He explains how they began the process by asking fans what version of baseball they found most exciting. The results showed that everyone wanted more action: more hits, more defense, more baserunning. This type of baseball essentially hasn't existed since the 1960s, when the hundred-mile-an-hour fastball, which is difficult to hit and control, entered the game. It flattened the game into strikeouts, walks, and home runs—a type of play lacking much action.</span></p>
+
+                <p><span class="para-letter">H</span><span class="para-content">Sword's team brainstormed potential fixes. Any rule that existed, they talked about changing—from changing the batting to changing the geometry of the field. But while all of these were ruled out as potential fixes, ABS was seen as a perfect vehicle for change. According to Sword, once you get the technology right, you can load any strike zone you want into the system. "It might be a triangle, or a blob, or something shaped like Texas. Over time, as baseball evolves, ABS can allow the zone to change with it."</span></p>
+
+                <p><span class="para-letter">I</span><span class="para-content">"In the past twenty years, sports have moved away from judgment calls. Soccer has Video Assistant Referees (for offside decisions, for example). Tennis has Hawk-Eye (for line calls, for example). For almost a decade, baseball has used instant replay on the base paths. This is widely liked, even if the precision can sometimes cause grave problems. But these applications deal with something physical: bases, lines, goals. The boundaries of action are precise, delineated like the keys of a piano. This is not the case with ABS and the strike zone. Historically, a certain discretion has been appreciated."</span></p>
+
+                <p><span class="para-letter">J</span><span class="para-content">I decided to email Alva Noë, a professor at Berkeley University and a baseball fan, for his opinion. "Hardly a day goes by that I don't wake up and run through the reasons that this [robot-umpire] is such a terrible
+idea," he wrote back. "Baseball is a game of skill, yes, but it is also a game of timing, rhythm, and judgment. To remove the human element from the umpire’s call is to change the very nature of the game. It’s not about getting every single call perfect; it’s about the drama, the debate, and the shared understanding that we’re all watching the same thing together."</span></p>
+            </div>
+        </div>
+
+        <div class="divider" id="divider"></div>
+
+        <div class="questions-pane" id="questionsPane">
+            <!-- Questions Block 1: Questions 27–32 — Identifying Information -->
+            <div class="questions-block">
+                <h3>Questions 27–32</h3>
+                <p style="margin-bottom:12px;"><strong>Do the following statements agree with the information given in Reading Passage 3?</strong></p>
+                <p style="margin-bottom:8px;"><em>Write</em></p>
+                <table class="ynng-table">
+                    <tr><th>TRUE</th><td>if the statement agrees with the information</td></tr>
+                    <tr><th>FALSE</th><td>if the statement contradicts the information</td></tr>
+                    <tr><th>NOT GIVEN</th><td>if there is no information on this</td></tr>
+                </table>
+
+                <div class="q-row" data-q="27">
+                    <span class="q-num">27.</span>
+                    <span>Fred DeJesus had help making his decisions during the first ABS game.</span>
+                    <table class="ynng-table" style="margin:8px 0 0 0; width:auto;">
+                        <tr>
+                            <th>True</th>
+                            <th>False</th>
+                            <th>Not Given</th>
+                        </tr>
+                        <tr>
+                            <td><input type="radio" name="q27" class="ynng-radio" value="true"></td>
+                            <td><input type="radio" name="q27" class="ynng-radio" value="false"></td>
+                            <td><input type="radio" name="q27" class="ynng-radio" value="ng"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="q-row" data-q="28">
+                    <span class="q-num">28.</span>
+                    <span>During the first ABS game, fans disagreed loudly with the umpire’s calls.</span>
+                    <table class="ynng-table" style="margin:8px 0 0 0; width:auto;">
+                        <tr>
+                            <th>True</th>
+                            <th>False</th>
+                            <th>Not Given</th>
+                        </tr>
+                        <tr>
+                            <td><input type="radio" name="q28" class="ynng-radio" value="true"></td>
+                            <td><input type="radio" name="q28" class="ynng-radio" value="false"></td>
+                            <td><input type="radio" name="q28" class="ynng-radio" value="ng"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="q-row" data-q="29">
+                    <span class="q-num">29.</span>
+                    <span>Frank Viola believes umpires used to favour certain players.</span>
+                    <table class="ynng-table" style="margin:8px 0 0 0; width:auto;">
+                        <tr>
+                            <th>True</th>
+                            <th>False</th>
+                            <th>Not Given</th>
+                        </tr>
+                        <tr>
+                            <td><input type="radio" name="q29" class="ynng-radio" value="true"></td>
+                            <td><input type="radio" name="q29" class="ynng-radio" value="false"></td>
+                            <td><input type="radio" name="q29" class="ynng-radio" value="ng"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="q-row" data-q="30">
+                    <span class="q-num">30.</span>
+                    <span>Morgan Sword’s team considered changing the size of the baseball itself.</span>
+                    <table class="ynng-table" style="margin:8px 0 0 0; width:auto;">
+                        <tr>
+                            <th>True</th>
+                            <th>False</th>
+                            <th>Not Given</th>
+                        </tr>
+                        <tr>
+                            <td><input type="radio" name="q30" class="ynng-radio" value="true"></td>
+                            <td><input type="radio" name="q30" class="ynng-radio" value="false"></td>
+                            <td><input type="radio" name="q30" class="ynng-radio" value="ng"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="q-row" data-q="31">
+                    <span class="q-num">31.</span>
+                    <span>ABS could allow the shape of the strike zone to be modified in future.</span>
+                    <table class="ynng-table" style="margin:8px 0 0 0; width:auto;">
+                        <tr>
+                            <th>True</th>
+                            <th>False</th>
+                            <th>Not Given</th>
+                        </tr>
+                        <tr>
+                            <td><input type="radio" name="q31" class="ynng-radio" value="true"></td>
+                            <td><input type="radio" name="q31" class="ynng-radio" value="false"></td>
+                            <td><input type="radio" name="q31" class="ynng-radio" value="ng"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="q-row" data-q="32">
+                    <span class="q-num">32.</span>
+                    <span>Alva Noë argues that umpires should have more training before using ABS.</span>
+                    <table class="ynng-table" style="margin:8px 0 0 0; width:auto;">
+                        <tr>
+                            <th>True</th>
+                            <th>False</th>
+                            <th>Not Given</th>
+                        </tr>
+                        <tr>
+                            <td><input type="radio" name="q32" class="ynng-radio" value="true"></td>
+                            <td><input type="radio" name="q32" class="ynng-radio" value="false"></td>
+                            <td><input type="radio" name="q32" class="ynng-radio" value="ng"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Questions Block 2: Questions 33–36 — Matching Paragraphs -->
+            <div class="questions-block">
+                <h3>Questions 33–36</h3>
+                <p style="margin-bottom:12px;"><strong>Look at the following statements and the list of people below.</strong></p>
+                <p style="margin-bottom:8px;"><em>Match each statement with the correct person.</em></p>
+                <p style="margin-bottom:8px;"><em>Write the correct letter: A–D</em></p>
+
+                <div class="options-list">
+                    <p><strong>A</strong> Fred DeJesus</p>
+                    <p><strong>B</strong> Rob Manfred</p>
+                    <p><strong>C</strong> Frank Viola</p>
+                    <p><strong>D</strong> Morgan Sword</p>
+                </div>
+
+                <div class="q-row" data-q="33">
+                    <span class="q-num">33.</span>
+                    <span>He suggests that the strike zone and the rules of baseball could be changed easily.</span>
+                    <input type="text" class="answer-gap" name="q33" maxlength="1">
+                </div>
+
+                <div class="q-row" data-q="34">
+                    <span class="q-num">34.</span>
+                    <span>He believes that technology will improve the game by removing disagreement.</span>
+                    <input type="text" class="answer-gap" name="q34" maxlength="1">
+                </div>
+
+                <div class="q-row" data-q="35">
+                    <span class="q-num">35.</span>
+                    <span>He experienced a change in how his decisions were communicated to others.</span>
+                    <input type="text" class="answer-gap" name="q35" maxlength="1">
+                </div>
+
+                <div class="q-row" data-q="36">
+                    <span class="q-num">36.</span>
+                    <span>He feels that a good relationship between player and umpire used to exist.</span>
+                    <input type="text" class="answer-gap" name="q36" maxlength="1">
+                </div>
+            </div>
+
+            <!-- Questions Block 3: Questions 37–40 — Summary Completion -->
+            <div class="questions-block">
+                <h3>Questions 37–40</h3>
+                <p style="margin-bottom:12px;"><strong>Complete the summary below.</strong></p>
+                <p style="margin-bottom:8px;"><em>Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</em></p>
+
+                <div class="continuation-box">
+                    <strong>The impact of technology on sports</strong><br><br>
+                    The use of technology to replace human decisions is not unique to baseball. Sports such as soccer and 
+                    tennis already rely on systems that check boundaries and 
+                    lines. These are generally accepted because they measure something 
+                    <input type="text" class="answer-gap" name="q37" placeholder="" style="width:100px;">. However, 
+                    the strike zone is different; there has historically been an element of 
+                    <input type="text" class="answer-gap" name="q38" placeholder="" style="width:100px;"> expected from 
+                    officials. Alva Noë argues that baseball should not be purely about 
+                    <input type="text" class="answer-gap" name="q39" placeholder="" style="width:100px;">. The 
+                    <input type="text" class="answer-gap" name="q40" placeholder="" style="width:100px;"> 
+                    between players and officials is also an important part of the sport.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <div class="nav-group">
+            <span class="part-label">Questions:</span>
+            <span class="q-indicator" data-q="27">27</span>
+            <span class="q-indicator" data-q="28">28</span>
+            <span class="q-indicator" data-q="29">29</span>
+            <span class="q-indicator" data-q="30">30</span>
+            <span class="q-indicator" data-q="31">31</span>
+            <span class="q-indicator" data-q="32">32</span>
+            <span class="q-indicator" data-q="33">33</span>
+            <span class="q-indicator" data-q="34">34</span>
+            <span class="q-indicator" data-q="35">35</span>
+            <span class="q-indicator" data-q="36">36</span>
+            <span class="q-indicator" data-q="37">37</span>
+            <span class="q-indicator" data-q="38">38</span>
+            <span class="q-indicator" data-q="39">39</span>
+            <span class="q-indicator" data-q="40">40</span>
+        </div>
+        <div class="nav-group">
+            <button class="clear-btn" id="clearAll">Clear All Answers</button>
+            <a href="#" class="back-btn">← Back</a>
+            <button class="next-passage-btn">Next Passage →</button>
+        </div>
+    </div>
+
+    <script>
+        // Highlight & Note Variables
+        let selectedText = '';
+        let highlightElements = [];
+        let activeNote = null;
+        let currentQuestion = null;
+
+        // Context Menu
+        const contextMenu = document.getElementById('contextMenu');
+        const noteBox = document.getElementById('noteBox');
+        const passageArea = document.getElementById('passageArea');
+
+        // Show Context Menu on Selection
+        passageArea.addEventListener('mouseup', function(e) {
+            selectedText = window.getSelection().toString().trim();
+            if (selectedText.length > 0) {
+                e.preventDefault();
+                contextMenu.style.left = e.pageX + 'px';
+                contextMenu.style.top = e.pageY + 'px';
+                contextMenu.style.display = 'block';
+            }
+        });
+
+        // Hide Menu When Clicking Elsewhere
+        document.addEventListener('click', function(e) {
+            if (!contextMenu.contains(e.target)) {
+                contextMenu.style.display = 'none';
+            }
+            if (!noteBox.contains(e.target) && e.target !== noteBox) {
+                // Keep note open unless clicking outside
+            }
+        });
+
+        // Highlight Text
+        document.getElementById('menuHighlight').addEventListener('click', function() {
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                const span = document.createElement('span');
+                span.className = 'highlight';
+                span.appendChild(range.cloneContents());
+                range.deleteContents();
+                range.insertNode(span);
+                highlightElements.push(span);
+            }
+            contextMenu.style.display = 'none';
+            window.getSelection().removeAllRanges();
+        });
+
+        // Add Note
+        document.getElementById('menuAddNote').addEventListener('click', function() {
+            noteBox.style.left = (parseInt(contextMenu.style.left) + 20) + 'px';
+            noteBox.style.top = contextMenu.style.top;
+            noteBox.style.display = 'block';
+            document.getElementById('noteText').focus();
+            contextMenu.style.display = 'none';
+        });
+
+        // Close Note
+        document.getElementById('noteClose').addEventListener('click', function() {
+            noteBox.style.display = 'none';
+            document.getElementById('noteText').value = '';
+        });
+
+        // Remove Highlight
+        document.getElementById('menuRemove').addEventListener('click', function() {
+            highlightElements.forEach(function(el) {
+                const parent = el.parentNode;
+                parent.insertBefore(document.createTextNode(el.textContent), el);
+                parent.removeChild(el);
+                parent.normalize();
+            });
+            highlightElements = [];
+            contextMenu.style.display = 'none';
+        });
+
+        // Make Note Draggable
+        let isDragging = false;
+        let dragOffsetX, dragOffsetY;
+        document.getElementById('noteDragHandle').addEventListener('mousedown', function(e) {
+            isDragging = true;
+            dragOffsetX = e.clientX - noteBox.get
+BoundingClientRect().left;
+            dragOffsetY = e.clientY - noteBox.getBoundingClientRect().top;
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (isDragging) {
+                noteBox.style.left = (e.clientX - dragOffsetX) + 'px';
+                noteBox.style.top = (e.clientY - dragOffsetY) + 'px';
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            isDragging = false;
+        });
+
+        // Question Indicators — Update Style on Answer
+        document.querySelectorAll('input[type="radio"], input[type="text"]').forEach(input => {
+            input.addEventListener('change', updateQuestionStatus);
+            input.addEventListener('input', updateQuestionStatus);
+        });
+
+        function updateQuestionStatus() {
+            const qRow = this.closest('.q-row');
+            if (!qRow) return;
+            const qNumber = qRow.dataset.q;
+            const indicator = document.querySelector(`.q-indicator[data-q="${qNumber}"]`);
+            if (!indicator) return;
+            
+            const hasValue = this.type === 'radio' 
+                ? qRow.querySelector('input:checked') !== null
+                : this.value.trim() !== '';
+            
+            if (hasValue) {
+                indicator.classList.add('answered');
+            } else {
+                indicator.classList.remove('answered');
+            }
+        }
+
+        // Highlight Current Question Row
+        document.querySelectorAll('.q-row input, .q-row select').forEach(input => {
+            input.addEventListener('focus', function() {
+                document.querySelectorAll('.q-row').forEach(r => r.classList.remove('current'));
+                document.querySelectorAll('.q-indicator').forEach(i => i.classList.remove('current'));
+                
+                const qRow = this.closest('.q-row');
+                if (qRow) {
+                    qRow.classList.add('current');
+                    const qNumber = qRow.dataset.q;
+                    document.querySelector(`.q-indicator[data-q="${qNumber}"]`)?.classList.add('current');
+                }
+            });
+        });
+
+        // Clear All Answers
+        document.getElementById('clearAll').addEventListener('click', function() {
+            if (confirm('Clear ALL answers? This cannot be undone.')) {
+                document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+                document.querySelectorAll('input[type="text"]').forEach(t => t.value = '');
+                document.querySelectorAll('.q-indicator').forEach(i => i.classList.remove('answered', 'current'));
+                document.querySelectorAll('.q-row').forEach(r => r.classList.remove('current'));
+            }
+        });
+
+        // Divider Resizing
+        const divider = document.getElementById('divider');
+        const mainGrid = document.getElementById('mainGrid');
+        const passagePane = document.getElementById('passagePane');
+        const questionsPane = document.getElementById('questionsPane');
+        let isResizing = false;
+
+        divider.addEventListener('mousedown', function(e) {
+            isResizing = true;
+            divider.classList.add('active');
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none';
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!isResizing) return;
+            const containerRect = mainGrid.getBoundingClientRect();
+            const newWidth = e.clientX - containerRect.left;
+            const minWidth = 300;
+            const maxWidth = containerRect.width - minWidth;
+            
+            if (newWidth >= minWidth && newWidth <= maxWidth) {
+                const percent = (newWidth / containerRect.width) * 100;
+                passagePane.style.width = percent + '%';
+                questionsPane.style.width = (100 - percent) + '%';
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            isResizing = false;
+            divider.classList.remove('active');
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+        });
+    </script>
 </body>
 </html>
