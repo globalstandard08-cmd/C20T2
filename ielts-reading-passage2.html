@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Reading — Procrastination</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+        html, body { background-color: #ffffff; height: 100%; overflow-y: auto; }
+        
+        .top-bar { 
+            background-color: #ffffff; 
+            padding: 10px 25px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .logo { height: 55px; width: auto; }
+        
+        .main-grid { display: flex; min-height: calc(100vh - 75px - 48px); }
+        
+        .passage-pane { 
+            width: calc(50% - 6px); 
+            background: #ffffff; 
+            overflow-y: auto; 
+            padding: 25px; 
+            max-height: calc(100vh - 75px - 48px); 
+            position: sticky; 
+            top: 75px; 
+        }
+        .exam-title {
+            text-align: center;
+            color: #1f3a5f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #1f3a5f;
+        }
+        .instruction { 
+            background-color: #f9f9f9; 
+            border-left: 3px solid #1f3a5f; 
+            padding: 12px; 
+            margin-bottom: 18px; 
+            border-radius: 4px; 
+            font-weight: 500; 
+            font-size: 15px; 
+            line-height: 1.6;
+        }
+        
+        .passage-text { font-size: 16px; line-height: 1.7; }
+        .passage-text p { margin-bottom: 14px; text-align: justify; }
+        .para-letter { font-weight: bold; color: #1f3a5f; display: inline-block; min-width: 24px; vertical-align: top; }
+        .para-content { display: inline-block; width: calc(100% - 30px); }
+        
+        .divider {
+            width: 12px;
+            background-color: #e0e0e0;
+            cursor: col-resize;
+            flex-shrink: 0;
+            position: relative;
+            border-left: 1px solid #d0d0d0;
+            border-right: 1px solid #d0d0d0;
+        }
+        .divider:hover, .divider.active { background-color: #b8b8b8; }
+        .divider::after {
+            content: "⋮⋮";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #888;
+            font-size: 10px;
+            letter-spacing: -2px;
+            pointer-events: none;
+        }
+        
+        .questions-pane { 
+            width: calc(50% - 6px); 
+            background: #ffffff; 
+            overflow-y: auto; 
+            padding: 25px; 
+            max-height: calc(100vh - 75px - 48px); 
+            position: sticky; 
+            top: 75px; 
+        }
+        .questions-block { margin-bottom: 35px; }
+        .questions-block h3 { color: #1f3a5f; margin-bottom: 10px; font-size: 18px; }
+        .q-row { display: flex; align-items: flex-start; gap: 10px; margin: 14px 0; font-size: 16px; flex-wrap: wrap; }
+        .q-row.current { 
+            background-color: #eaf1fa; 
+            padding: 10px 8px; 
+            border-radius: 4px;
+            margin-left: -8px;
+            margin-right: -8px;
+        }
+        .q-num { font-weight: bold; min-width: 28px; color: #1f3a5f; flex-shrink: 0; }
+        .input-answer {
+            width: 160px; padding: 7px 10px; border: 1px solid #ddd; border-radius: 4px;
+            font-size: 16px; background: #fff;
+        }
+        .input-answer:focus { outline: none; border-color: #1f3a5f; }
+        .input-answer.filled { background-color: #f5f8ff; border-color: #1f3a5f; }
+        
+        /* Matching table style */
+        .match-table { border-collapse: collapse; margin: 15px 0; width: 100%; max-width: 320px; }
+        .match-table th, .match-table td { border: 1px solid #ccc; padding: 8px 6px; text-align: center; font-size: 15px; }
+        .match-table th { background: #f5f5f5; color: #1f3a5f; }
+        .match-table td:first-child { text-align: left; font-size: 15px; }
+        .match-checkbox { width: 18px; height: 18px; cursor: pointer; accent-color: #1f3a5f; }
+        
+        /* Multiple choice */
+        .mc-option { display: flex; align-items: flex-start; gap: 10px; margin: 8px 0 8px 36px; font-size: 15px; }
+        .mc-letter { font-weight: bold; min-width: 20px; color: #1f3a5f; }
+        .mc-checkbox { width: 18px; height: 18px; cursor: pointer; accent-color: #1f3a5f; margin-right: 4px; }
+        .continuation-box { 
+            background: #f0f4f9; 
+            border-left: 3px solid #1f3a5f; 
+            padding: 14px; 
+            margin: 10px 0 20px 0; 
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .highlight { 
+            background-color: #ffd700; padding: 1px 3px; border-radius: 2px; 
+            cursor: pointer; display: inline; color: #000; position: relative; 
+        }
+        .context-menu { 
+            position: absolute; background: #fff; border: 1px solid #ddd; 
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1); z-index: 9999; display: none; min-width: 180px; 
+        }
+        .context-menu div { padding: 10px 14px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f5f5f5; }
+        .context-menu div:last-child { border-bottom: none; }
+        .context-menu div:hover { background: #f5f5f5; }
+        
+        .note-box { 
+            position: absolute; width: 260px; min-height: 80px; 
+            background: #fffde7; border: 1px solid #f9d423; border-radius: 6px; 
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1); z-index: 9990; display: none; 
+        }
+        .note-header { 
+            background: #f9d423; padding: 6px 10px; cursor: move; 
+            display: flex; justify-content: space-between; align-items: center; font-weight: bold; 
+        }
+        .note-close { cursor: pointer; font-size: 16px; }
+        .note-textarea { 
+            width: 100%; min-height: 60px; border: none; padding: 10px; 
+            font-size: 14px; resize: vertical; background: transparent; outline: none; 
+        }
+        
+        .bottom-nav { 
+            min-height: 48px; border-top: 1px solid #eee; display: flex; 
+            align-items: center; justify-content: space-between; padding: 8px 15px; 
+            position: sticky; bottom: 0; background: #fff; z-index: 90; 
+            flex-wrap: wrap; gap: 6px 12px;
+        }
+        .nav-group { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; }
+        .part-label { font-size: 10px; color: #1f3a5f; margin: 0 4px; white-space: nowrap; }
+        .q-indicator {
+            width: 24px; height: 24px; border: 1px solid #ddd; background: #fff;
+            text-align: center; line-height: 22px; font-size: 10px; cursor: pointer; border-radius: 3px;
+        }
+        .q-indicator.current { background: #eaf1fa; border-color: #1f3a5f; border-width: 2px; font-weight: bold; }
+        .q-indicator.answered { background: #10b981; color: #fff; border-color: #10b981; }
+        .back-btn, .next-passage-btn, .clear-btn {
+            padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;
+            font-size: 14px; font-weight: bold; text-decoration: none;
+        }
+        .back-btn { background: #6b7280; color: #fff; }
+        .next-passage-btn { background: #10b981; color: #fff; white-space: nowrap; flex-shrink: 0; }
+        .clear-btn { background: #ef4444; color: #fff; margin-left: 8px; }
+    </style>
+</head>
+<body>
+    <div class="context-menu" id="contextMenu">
+        <div id="menuHighlight">🖍️ Highlight</div>
+        <div id="menuAddNote">📝 Add Note</div>
+        <div id="menuRemove">❌ Remove Highlight</div>
+    </div>
+    
+    <div class="note-box" id="noteBox">
+        <div class="note-header" id="noteDragHandle">
+            <span>📝 Note</span>
+            <span class="note-close" id="noteClose">×</span>
+        </div>
+        <textarea class="note-textarea" id="noteText" placeholder="Type your note here…"></textarea>
+    </div>
+    
+    <div class="top-bar">
+        <img src="ielts-logo.png" alt="IELTS Logo" class="logo">
+    </div>
+    <div class="main-grid" id="mainGrid">
+        <div class="passage-pane" id="passagePane">
+            <div class="exam-title">READING — CAMBRIDGE TEST</div>
+            <h2>READING PASSAGE 2</h2>
+            <div class="instruction">You should spend about 20 minutes on Questions 14–26, which are based on Reading Passage 2 below.</div>
+            <h3 style="color:#1f3a5f; margin:15px 0; font-size:22px; text-align:center;">Procrastination</h3>
+            <p style="text-align:center; font-style:italic; margin-bottom:20px;">A psychologist explains why we put off important tasks and how we can break this habit</p>
+            <div class="passage-text" id="passageArea">
+<p><span class="para-letter">A</span><span class="para-content">Procrastination is the habit of delaying a necessary task, usually by focusing on less urgent, more enjoyable, and easier activities instead. We all do it from time to time. We might be composing a message to a friend who we have to let down, or putting together an important report for college or work; we're doing our best to avoid doing the job at hand, but deep down we know that we should just be getting on with it. Unfortunately, berating ourselves won't stop us procrastinating again. In fact, it's one of the worst things we can do. This matters because, as my research shows, procrastination doesn't just waste time, but is actually linked to other problems too.</span></p>
+
+<p><span class="para-letter">B</span><span class="para-content">Contrary to popular belief, procrastination is not due to laziness or poor time management. Scientific studies suggest procrastination is, in fact, caused by poor mood management. This makes sense if we consider that people are more likely to put off starting or completing tasks that they are not really keen to do. If we think about how the task threatens our sense of self-worth or makes us anxious, we will be more likely to put it off. Research involving brain imaging has found that areas of the brain linked to detection of threats and emotion regulation are actually different in people who chronically procrastinate compared to those who don't procrastinate frequently.</span></p>
+
+<p><span class="para-letter">C</span><span class="para-content">Tasks that are emotionally loaded or difficult, such as preparing for exams, are prime candidates for procrastination. People with low self-esteem are more likely to procrastinate. Another group of people who tend to procrastinate are perfectionists, who worry their work will be judged harshly by others. We know that if we don't finish that report or complete those home repairs, then what we've done can't be evaluated. When we avoid such tasks, we also avoid the negative emotions associated with them. This is rewarding, and it conditions us to use procrastination to repair our mood. If we engage in more enjoyable tasks instead, we get another mood boost. In the long run, however, procrastination isn't an effective way of managing emotions. The 'mood repair' we experience is temporary. Afterwards, people tend to be left with a sense of guilt that not only increases their negative mood, but also reinforces their tendency to procrastinate.</span></p>
+
+<p><span class="para-letter">D</span><span class="para-content">So why is this such a problem? When most people think of the costs of procrastination, they think of the toll on productivity. For example, studies have shown that procrastination negatively impacts on student performance. But putting off reading textbooks and writing essays may reflect other areas of students' lives, too. In one study of over 3,000 German students over a six-month period, those who reported procrastinating over their university work were also more likely to engage in study-related misconduct, such as cheating and plagiarism. But the behaviour that procrastination was most closely linked with was using fraudulent excuses to get deadlines extended. Other research shows that employees on average spend almost a quarter of their workday procrastinating, and again this is linked with negative outcomes. In fact, in one US survey of over 22,000 employees, participants who said they regularly procrastinated had less annual income and less employment stability. For every one-percentage increase on a measure of chronic procrastination, annual income decreased by US$1,500.</span></p>
+
+<p><span class="para-letter">E</span><span class="para-content">Procrastination also correlates with serious health and well-being problems. A tendency to procrastinate is linked to poor mental health, including higher levels of depression and anxiety. Across numerous studies, I've found people who regularly procrastinate report a greater number of health issues, such as headaches, flu and colds, and digestive issues. They also experience higher levels of stress and poor sleep quality. They are less likely to practise healthy behaviours, such as eating a healthy diet and regularly exercising, and use destructive coping strategies to manage their stress. In one study of over 700 people, I found one person prone to procrastination had a 63% greater risk of poor health after accounting for other personality traits and demographics.</span></p>
+
+<p><span class="para-letter">F</span><span class="para-content">Finding better ways of managing our emotions is one route out of the vicious cycle of procrastination. An important first step is to manage our environment and how we view the task. There are a number of evidence-based strategies that can help us fend off distractions that can occupy our minds when we should be focusing on the thing we should be getting on with. For example, reminding ourselves about why the task is important can increase positive feelings towards it. Forgiving ourselves and having compassion when we procrastinate can help break the procrastination cycle. We should admit that we feel bad, but not be overly critical of ourselves. We should remind ourselves that we're not the first person to procrastinate, nor the last. Doing this can take the edge off the negative feelings we have about ourselves when we procrastinate. This can make it all easier to get back on track.</span></p>
+            </div>
+        </div>
+        <div class="divider" id="divider"></div>
+        <div class="questions-pane" id="questionsPane">
+            <div class="questions-block" id="matchArea">
+                <h3>Questions 14–16</h3>
+                <div class="instruction">Reading Passage 2 has six paragraphs, A–F.<br>Which paragraph contains the following information?<br><br><strong>NB</strong> You may use any letter more than once.</div>
+
+                <table class="match-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>A</th>
+                            <th>B</th>
+                            <th>C</th>
+                            <th>D</th>
+                            <th>E</th>
+                            <th>F</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="q14">
+                            <td><strong>14.</strong> mention of false assumptions about why people procrastinate</td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="14" data-val="A"></td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="14" data-val="B"></td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="14" data-val="C"></td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="14" data-val="D"></td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="14" data-val="E"></td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="14" data-val="F"></td>
+                        </tr>
+                        <tr id="q15">
+                            <td><strong>15.</strong> reference to the realisation that others also procrastinate</td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="15" data-val="A"></td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="15" data-val="B"></td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="15" data-val="C"></td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="15" data-val="D"></td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="15" data-val="E"></td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="15" data-val="F"></td>
+                        </tr>
+                        <tr id="q16">
+                            <td><strong>16.</strong> neurological evidence of a link between procrastination and emotion</td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="16" data-val="A"></td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="16" data-val="B"></td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="16" data-val="C"></td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="16" data-val="D"></td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="16" data-val="E"></td>
+                            <td><input type="checkbox" class="match-checkbox" data-q="16" data-val="F"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="questions-block" id="summaryArea">
+                <h3>Questions 17–22</h3>
+                <div class="instruction">Complete the summary below.<br>Choose <strong>ONE WORD ONLY</strong> from the passage for each answer.</div>
+
+                <h4 style="margin:16px 0 8px; color:#1f3a5f; font-size:16px; font-weight:bold;">What makes us procrastinate?</h4>
+
+                <p style="margin-bottom:14px; line-height:1.8;">
+                Many people think that procrastination is the result of (17) .................... Others believe it to be the result of an inability to organise time efficiently.<br><br>
+                But scientific studies suggest that procrastination is actually due to poor mood management. The tasks we are most likely to put off are those that could damage our self-esteem or cause us to feel (18) .................... when we think about them. Research comparing chronic procrastinators with other people even found differences in the brain regions associated with regulating emotions and identifying (19) ....................<br><br>
+                Emotionally loaded and difficult tasks often cause us to procrastinate. Getting ready to take (20) .................... might be a typical example of one such task. People who are likely to procrastinate tend to be either (21) .................... or those with low self-esteem.
+                </p>
+
+                <div class="continuation-box">
+                    Procrastination is only a short-term measure for managing emotions. It's often followed by a feeling of (22) ...................., which worsens our mood and leads to more procrastination.
+                </div>
+
+                <div class="q-row" id="q17">
+                    <span class="q-num">17</span>
+                    <input type="text" class="input-answer" id="ans17" placeholder="ONE WORD">
+                </div>
+                <div class="q-row" id="q18">
+                    <span class="q-num">18</span>
+                    <input type="text" class="input-answer" id="ans18" placeholder="ONE WORD">
+                </div>
+                <div class="q-row" id="q19">
+                    <span class="q-num">19</span>
+                    <input type="text" class="input-answer" id="ans19" placeholder="ONE WORD">
+                </div>
+                <div class="q-row" id="q20">
+                    <span class="q-num">20</span>
+                    <input type="text" class="input-answer" id="ans20" placeholder="ONE WORD">
+                </div>
+                <div class="q-row" id="q21">
+                    <span class="q-num">21</span>
+                    <input type="text" class="input-answer" id="ans21" placeholder="ONE WORD">
+                </div>
+                <div class="q-row" id="q22">
+                    <span class="q-num">22</span>
+                    <input type="text" class="input-answer" id="ans22" placeholder="ONE WORD">
+                </div>
+            </div>
+
+            <div class="questions-block" id="mcArea">
+                <h3>Questions 23–24</h3>
+                <div class="instruction">Choose <strong>TWO letters</strong>, A–E.<br>Which <strong>TWO</strong> comparisons between employees who often procrastinate and those who do not are mentioned in the text?</div>
+
+                <div class="q-row" id="q23">
+                    <span class="q-num">23–24</span>
+                </div>
+                <label class="mc-option">
+                    <input type="checkbox" class="mc-checkbox" data-q="23-24" data-val="A">
+                    <span class="mc-letter">A</span>
+                    Their salaries are lower.
+                </label>
+                <label class="mc-option">
+                    <input type="checkbox" class="mc-checkbox" data-q="23-24" data-val="B">
+                    <span class="mc-letter">B</span>
+                    The quality of their work is inferior.
+                </label>
+                <label class="mc-option">
+                    <input type="checkbox" class="mc-checkbox" data-q="23-24" data-val="C">
+                    <span class="mc-letter">C</span>
+                    They don't keep their jobs for as long.
+                </label>
+                <label class="mc-option">
+                    <input type="checkbox" class="mc-checkbox" data-q="23-24" data-val="D">
+                    <span class="mc-letter">D</span>
+                    They don't enjoy their working lives as much.
+                </label>
+                <label class="mc-option">
+                    <input type="checkbox" class="mc-checkbox" data-q="23-24" data-val="E">
+                    <span class="mc-letter">E</span>
+                    They have poorer relationships with colleagues.
+                </label>
+            </div>
+
+            <div class="questions-block" id="mcArea2">
+                <h3>Questions 25–26</h3>
+                <div class="instruction">Choose <strong>TWO letters</strong>, A–E.<br>Which <strong>TWO</strong> recommendations for getting out of a cycle of procrastination does the writer give?</div>
+
+                <div class="q-row" id="q25">
+                    <span class="q-num">25–26</span>
+                </div>
+                <label class="mc-option">
+                    <input type="checkbox" class="mc-checkbox" data-q="25-26" data-val="A">
+                    <span class="mc-letter">A</span>
+                    not judging ourselves harshly
+                </label>
+                <label class="mc-option">
+                    <input type="checkbox" class="mc-checkbox" data-q="25-26" data-val="B">
+                    <span class="mc-letter">B</span>
+                    setting ourselves manageable aims
+                </label>
+                <label class="mc-option">
+                    <input type="checkbox" class="mc-checkbox" data-q="25-26" data-val="C">
+                    <span class="mc-letter">C</span>
+                    rewarding ourselves for tasks achieved
+                </label>
+                <label class="mc-option">
+                    <input type="checkbox" class="mc-checkbox" data-q="25-26" data-val="D">
+                    <span class="mc-letter">D</span>
+                    prioritising tasks according to their importance
+                </label>
+                <label class="mc-option">
+                    <input type="checkbox" class="mc-checkbox" data-q="25-26" data-val="E">
+                    <span class="mc-letter">E</span>
+                    avoiding things that stop us concentrating on our tasks
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-nav">
+        <div style="display:flex; gap:8px; align-items:center;">
+            <a href="ielts-reading-passage1.html" class="back-btn">← Back</a>
+            <button class="clear-btn" id="clearAllBtn">🗑️ Clear</button>
+        </div>
+        <div class="nav-group">
+            <span class="part-label">P1:</span>
+            <div class="q-indicator" data-q="1">1</div>
+            <div class="q-indicator" data-q="2">2</div>
+            <div class="q-indicator" data-q="3">3</div>
+            <div class="q-indicator" data-q="4">4</div>
+            <div class="q-indicator" data-q="5">5</div>
+            <div class="q-indicator" data-q="6">6</div>
+            <div class="q-indicator" data-q="7">7</div>
+            <div class="q-indicator" data-q="8">8</div>
+            <div class="q-indicator" data-q="9">9</div>
+            <div class="q-indicator" data-q="10">10</div>
+            <div class="q-indicator" data-q="11">11</div>
+            <div class="q-indicator" data-q="12">12</div>
+            <div class="q-indicator" data-q="13">13</div>
+            <span class="part-label">P2:</span>
+            <div class="q-indicator current" data-q="14">14</div>
+            <div class="q-indicator" data-q="15">15</div>
+            <div class="q-indicator" data-q="16">16</div>
+            <div class="q-indicator" data-q="17">17</div>
+            <div class="q-indicator" data-q="18">18</div>
+            <div class="q-indicator" data-q="19">19</div>
+            <div class="q-indicator" data-q="20">20</div>
+            <div class="q-indicator" data-q="21">21</div>
+            <div class="q-indicator" data-q="22">22</div>
+            <div class="q-indicator" data-q="23">23</div>
+            <div class="q-indicator" data-q="24">24</div>
+            <div class="q-indicator" data-q="25">25</div>
+            <div class="q-indicator" data-q="26">26</div>
+            <span class="part-label">P3:</span>
+            <div class="q-indicator" data-q="27">27</div>
+            <div class="q-indicator" data-q="28">28</div>
+            <div class="q-indicator" data-q="29">29</div>
+            <div class="q-indicator" data-q="30">30</div>
+            <div class="q-indicator" data-q="31">31</div>
+            <div class="q-indicator" data-q="32">32</div>
+            <div class="q-indicator" data-q="33">33</div>
+            <div class="q-indicator" data-q="34">34</div>
+            <div class="q-indicator" data-q="35">35</div>
+            <div class="q-indicator" data-q="36">36</div>
+            <div class="q-indicator" data-q="37">37</div>
+            <div class="q-indicator" data-q="38">38</div>
+            <div class="q-indicator" data-q="39">39</div>
+            <div class="q-indicator" data-q="40">40</div>
+        </div>
+        <a href="ielts-reading-passage3.html" class="next-passage-btn">Next →</a>
+    </div>
+<script>
+const STORAGE_KEY = 'Procrastination_Test_Reading';
+const passageId = 'ielts-reading-passage2';
+
+// --- Draggable Divider ---
+const divider = document.getElementById('divider');
+const passagePane = document.getElementById('passagePane');
+const questionsPane = document.getElementById('questionsPane');
+const MIN_WIDTH = 25, MAX_WIDTH = 75;
+let savedSplit = localStorage.getItem(`${STORAGE_KEY}_split`);
+let passagePercent = savedSplit ? parseFloat(savedSplit) : 50;
+
+function applySplit() {
+    passagePane.style.width = `calc(${passagePercent}% - 6px)`;
+    questionsPane.style.width = `calc(${100 - passagePercent}% - 6px)`;
+}
+applySplit();
+
+let isDraggingDivider = false;
+divider.addEventListener('mousedown', e => {
+    isDraggingDivider = true;
+    divider.classList.add('active');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+});
+document.addEventListener('mousemove', e => {
+    if (!isDraggingDivider) return;
+    const rect = document.getElementById('mainGrid').getBoundingClientRect();
+    let newPercent = ((e.clientX - rect.left) / rect.width) * 100;
+    newPercent = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, newPercent));
+    passagePercent = newPercent;
+    applySplit();
+});
+document.addEventListener('mouseup', () => {
+    if (isDraggingDivider) {
+        isDraggingDivider = false;
+        divider.classList.remove('active');
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        localStorage.setItem(`${STORAGE_KEY}_split`, passagePercent);
+    }
+});
+
+// --- Highlight & Note System ---
+const noteBox = document.getElementById('noteBox');
+const noteText = document.getElementById('noteText');
+const noteClose = document.getElementById('noteClose');
+const contextMenu = document.getElementById('context
+Menu');
+let currentRange = null, activeHighlight = null;
+const highlightAreas = ['passageArea', 'matchArea', 'summaryArea', 'mcArea', 'mcArea2'];
+
+function isInHighlightArea(node) {
+    return highlightAreas.some(id => {
+        const el = document.getElementById(id);
+        return el && el.contains(node);
+    });
+}
+
+function isSelectionValid(sel) {
+    if (!sel || sel.isCollapsed || !sel.toString().trim()) return false;
+    try {
+        return isInHighlightArea(sel.getRangeAt(0).commonAncestorContainer);
+    } catch { return false; }
+}
+
+function saveHighlightsData() {
+    const highlights = [];
+    document.querySelectorAll('.highlight').forEach(hl => {
+        highlights.push({
+            text: hl.textContent,
+            note: hl.getAttribute('data-note') || ''
+        });
+    });
+    localStorage.setItem(`${passageId}_highlights`, JSON.stringify(highlights));
+}
+
+document.addEventListener('contextmenu', e => {
+    let el = e.target, clickedHighlight = null;
+    while (el) {
+        if (el.classList && el.classList.contains('highlight')) {
+            clickedHighlight = el; break;
+        }
+        el = el.parentElement;
+    }
+    if (clickedHighlight) {
+        activeHighlight = clickedHighlight;
+        currentRange = null;
+        contextMenu.style.left = e.pageX + 'px';
+        contextMenu.style.top = e.pageY + 'px';
+        contextMenu.style.display = 'block';
+        e.preventDefault();
+        return;
+    }
+    const sel = window.getSelection();
+    if (isSelectionValid(sel)) {
+        currentRange = sel.getRangeAt(0).cloneRange();
+        activeHighlight = null;
+        contextMenu.style.left = e.pageX + 'px';
+        contextMenu.style.top = e.pageY + 'px';
+        contextMenu.style.display = 'block';
+        e.preventDefault();
+    } else {
+        contextMenu.style.display = 'none';
+    }
+});
+
+document.addEventListener('click', e => {
+    if (!contextMenu.contains(e.target)) contextMenu.style.display = 'none';
+});
+
+document.getElementById('menuHighlight').addEventListener('click', () => {
+    contextMenu.style.display = 'none';
+    if (!currentRange) return;
+    try {
+        const span = document.createElement('span');
+        span.className = 'highlight';
+        span.setAttribute('data-note', '');
+        currentRange.surroundContents(span);
+        window.getSelection().removeAllRanges();
+        saveHighlightsData();
+    } catch { alert('⚠️ Please select smaller sections of text.'); }
+});
+
+document.getElementById('menuAddNote').addEventListener('click', () => {
+    contextMenu.style.display = 'none';
+    if (!activeHighlight && currentRange) {
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            span.setAttribute('data-note', '');
+            currentRange.surroundContents(span);
+            activeHighlight = span;
+            window.getSelection().removeAllRanges();
+        } catch { alert('⚠️ Please select smaller sections of text.'); return; }
+    }
+    if (!activeHighlight) return;
+    const rect = activeHighlight.getBoundingClientRect();
+    noteBox.style.left = Math.min(rect.right + 10, window.innerWidth - 280) + 'px';
+    noteBox.style.top = Math.min(rect.top, window.innerHeight - 100) + 'px';
+    noteBox.style.display = 'block';
+    noteText.value = activeHighlight.getAttribute('data-note') || '';
+    noteText.focus();
+});
+
+document.getElementById('menuRemove').addEventListener('click', () => {
+    contextMenu.style.display = 'none';
+    if (!activeHighlight) return;
+    const parent = activeHighlight.parentNode;
+    while (activeHighlight.firstChild) {
+        parent.insertBefore(activeHighlight.firstChild, activeHighlight);
+    }
+    parent.removeChild(activeHighlight);
+    parent.normalize();
+    activeHighlight = null;
+    saveHighlightsData();
+});
+
+noteClose.addEventListener('click', () => {
+    if (activeHighlight) {
+        activeHighlight.setAttribute('data-note', noteText.value);
+        saveHighlightsData();
+    }
+    noteBox.style.display = 'none';
+    activeHighlight = null;
+});
+
+// Drag note box
+let isDraggingNote = false, noteOffsetX = 0, noteOffsetY = 0;
+document.getElementById('noteDragHandle').addEventListener('mousedown', e => {
+    isDraggingNote = true;
+    const rect = noteBox.getBoundingClientRect();
+    noteOffsetX = e.clientX - rect.left;
+    noteOffsetY = e.clientY - rect.top;
+});
+document.addEventListener('mousemove', e => {
+    if (!isDraggingNote) return;
+    let newX = e.clientX - noteOffsetX;
+    let newY = e.clientY - noteOffsetY;
+    newX = Math.max(0, Math.min(newX, window.innerWidth - 260));
+    newY = Math.max(0, Math.min(newY, window.innerHeight - 80));
+    noteBox.style.left = newX + 'px';
+    noteBox.style.top = newY + 'px';
+});
+document.addEventListener('mouseup', () => isDraggingNote = false);
+
+// --- Answers & Navigation ---
+let currentQuestionNum = 14;
+
+function setCurrentQuestion(qNum) {
+    document.querySelectorAll('.q-row.current').forEach(r => r.classList.remove('current'));
+    document.querySelectorAll('.q-indicator.current').forEach(b => b.classList.remove('current'));
+    currentQuestionNum = qNum;
+    const row = document.getElementById(`q${qNum}`);
+    const indicator = document.querySelector(`.q-indicator[data-q="${qNum}"]`);
+    if (row) row.classList.add('current');
+    if (indicator) indicator.classList.add('current');
+}
+
+function updateStatus() {
+    for (let q = 1; q <= 40; q++) {
+        const btn = document.querySelector(`.q-indicator[data-q="${q}"]`);
+        if (!btn) continue;
+        let hasAnswer = false;
+        if (q >= 14 && q <= 16) {
+            hasAnswer = document.querySelectorAll(`input.match-checkbox[data-q="${q}"]:checked`).length > 0;
+        } else if (q >= 17 && q <= 22) {
+            const val = localStorage.getItem(`${STORAGE_KEY}_q${q}`) || '';
+            hasAnswer = val.trim().length > 0;
+        } else if (q === 23 || q === 24) {
+            hasAnswer = document.querySelectorAll(`input.mc-checkbox[data-q="23-24"]:checked`).length > 0;
+        } else if (q === 25 || q === 26) {
+            hasAnswer = document.querySelectorAll(`input.mc-checkbox[data-q="25-26"]:checked`).length > 0;
+        }
+        btn.classList.toggle('answered', hasAnswer);
+    }
+}
+
+document.querySelectorAll('.q-indicator').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const qNum = parseInt(btn.dataset.q);
+        setCurrentQuestion(qNum);
+        const target = document.getElementById(`q${qNum}`);
+        if (target) target.scrollIntoView({behavior:'smooth', block:'center'});
+    });
+});
+
+function saveCheckbox(groupKey, qNum, val) {
+    let saved = JSON.parse(localStorage.getItem(`${STORAGE_KEY}_${groupKey}`) || '[]');
+    if (saved.includes(val)) {
+        saved = saved.filter(v => v !== val);
+    } else {
+        saved.push(val);
+    }
+    localStorage.setItem(`${STORAGE_KEY}_${groupKey}`, JSON.stringify(saved));
+    updateStatus();
+}
+
+function loadCheckboxes(groupKey, selector) {
+    const saved = JSON.parse(localStorage.getItem(`${STORAGE_KEY}_${groupKey}`) || '[]');
+    document.querySelectorAll(selector).forEach(cb => {
+        cb.checked = saved.includes(cb.dataset.val);
+    });
+}
+
+// Q14-16 — Matching paragraph checkboxes
+document.querySelectorAll('.match-checkbox').forEach(cb => {
+    cb.addEventListener('change', () => {
+        const q = cb.dataset.q;
+        saveCheckbox(`q${q}`, q, cb.dataset.val);
+    });
+});
+
+// Q17-22 — Summary completion
+for (let q = 17; q <= 22; q++) {
+    const box = document.getElementById(`ans${q}`);
+    box.addEventListener('input', () => {
+        const val = box.value.trim();
+        box.value = val;
+        box.classList.toggle('filled', val !== '');
+        localStorage.setItem(`${STORAGE_KEY}_q${q}`, val);
+        updateStatus();
+    });
+}
+
+// Q23-26 — Multiple choice checkboxes
+document.querySelectorAll('.mc-checkbox').forEach(cb => {
+    cb.addEventListener('change', () => {
+        const group = cb.dataset.q;
+        const checked = document.querySelectorAll(`input.mc-checkbox[data-q="${group}"]:checked`);
+        if (checked.length > 2) {
+            cb.checked = false;
+            alert('⚠️ Please choose only TWO options.');
+            return;
+        }
+        saveCheckbox(group, group, cb.dataset.val);
+    });
+});
+
+function clearAllData() {
+    if (!confirm('⚠️ Are you sure you want to clear ALL answers, highlights, and notes? This cannot be undone.')) return;
+    for (let q = 1; q <= 40; q++) localStorage.removeItem(`${STORAGE_KEY}_q${q}`);
+    localStorage.removeItem(`${STORAGE_KEY}_q14`);
+    localStorage.removeItem(`${STORAGE_KEY}_q15`);
+    localStorage.removeItem(`${STORAGE_KEY}_q16`);
+    localStorage.removeItem(`${STORAGE_KEY}_23-24`);
+    localStorage.removeItem(`${STORAGE_KEY}_25-26`);
+    localStorage.removeItem(`${passageId}_highlights`);
+    localStorage.removeItem(`${STORAGE_KEY}_split`);
+    document.querySelectorAll('input').forEach(i => { i.checked = false; if (i.type === 'text') { i.value = ''; i.classList.remove('filled'); } });
+    document.querySelectorAll('.highlight').forEach(hl => {
+        const parent = hl.parentNode;
+        while (hl.firstChild) parent.insertBefore(hl.firstChild, hl);
+        parent.removeChild(hl);
+        parent.normalize();
+    });
+    location.reload();
+}
+document.getElementById('clearAllBtn').addEventListener('click', clearAllData);
+
+// Load saved data
+document.addEventListener('DOMContentLoaded', () => {
+    // Matching Q14-16
+    loadCheckboxes('q14', 'input.match-checkbox[data-q="14"]');
+    loadCheckboxes('q15', 'input.match-checkbox[data-q="15"]');
+    loadCheckboxes('q16', 'input.match-checkbox[data-q="16"]');
+    
+    // Summary Q17-22
+    for (let q = 17; q <= 22; q++) {
+        const box = document.getElementById(`ans${q}`);
+        const saved = localStorage.getItem(`${STORAGE_KEY}_q${q}`) || '';
+        if (saved) { box.value = saved; box.classList.add('filled'); }
+    }
+    
+    // Multiple choice Q23-26
+    loadCheckboxes('23-24', 'input.mc-checkbox[data-q="23-24"]');
+    loadCheckboxes('25-26', 'input.mc-checkbox[data-q="25-26"]');
+    
+    setCurrentQuestion(14);
+    updateStatus();
+});
+</script>
+</body>
+</html>
