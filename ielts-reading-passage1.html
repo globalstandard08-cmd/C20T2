@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Reading — Manatees</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+        html, body { background-color: #ffffff; height: 100%; overflow-y: auto; }
+        
+        .top-bar { 
+            background-color: #ffffff; 
+            padding: 10px 25px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .logo { height: 55px; width: auto; }
+        
+        .main-grid { display: flex; min-height: calc(100vh - 75px - 48px); }
+        
+        .passage-pane { 
+            width: calc(50% - 6px); 
+            background: #ffffff; 
+            overflow-y: auto; 
+            padding: 25px; 
+            max-height: calc(100vh - 75px - 48px); 
+            position: sticky; 
+            top: 75px; 
+        }
+        .exam-title {
+            text-align: center;
+            color: #1f3a5f;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #1f3a5f;
+        }
+        .instruction { 
+            background-color: #f9f9f9; 
+            border-left: 3px solid #1f3a5f; 
+            padding: 12px; 
+            margin-bottom: 18px; 
+            border-radius: 4px; 
+            font-weight: 500; 
+            font-size: 15px; 
+            line-height: 1.6;
+        }
+        
+        .passage-text { font-size: 16px; line-height: 1.7; }
+        .passage-text p { margin-bottom: 14px; text-align: justify; }
+        .para-label { font-weight: bold; color: #1f3a5f; display: inline-block; min-width: 24px; }
+        
+        .divider {
+            width: 12px;
+            background-color: #e0e0e0;
+            cursor: col-resize;
+            flex-shrink: 0;
+            position: relative;
+            border-left: 1px solid #d0d0d0;
+            border-right: 1px solid #d0d0d0;
+        }
+        .divider:hover, .divider.active { background-color: #b8b8b8; }
+        .divider::after {
+            content: "⋮⋮";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #888;
+            font-size: 10px;
+            letter-spacing: -2px;
+            pointer-events: none;
+        }
+        
+        .questions-pane { 
+            width: calc(50% - 6px); 
+            background: #ffffff; 
+            overflow-y: auto; 
+            padding: 25px; 
+            max-height: calc(100vh - 75px - 48px); 
+            position: sticky; 
+            top: 75px; 
+        }
+        .questions-block { margin-bottom: 35px; }
+        .questions-block h3 { color: #1f3a5f; margin-bottom: 10px; font-size: 18px; }
+        .q-row { display: flex; align-items: flex-start; gap: 10px; margin: 14px 0; font-size: 16px; flex-wrap: wrap; }
+        .q-row.current { 
+            background-color: #eaf1fa; 
+            padding: 10px 8px; 
+            border-radius: 4px;
+            margin-left: -8px;
+            margin-right: -8px;
+        }
+        .q-num { font-weight: bold; min-width: 28px; color: #1f3a5f; flex-shrink: 0; }
+        .ans-box {
+            width: 160px; height: 36px; border: 1px solid #333; border-radius: 2px;
+            padding: 0 8px; font-weight: bold; font-size: 15px; text-transform: uppercase;
+            background: #fff; outline: none;
+        }
+        .ans-box.filled { background: #f5f8ff; border-color: #1f3a5f; }
+        .input-answer {
+            width: 220px; padding: 7px 10px; border: 1px solid #ddd; border-radius: 4px;
+            font-size: 16px; background: #fff;
+        }
+        .input-answer:focus { outline: none; border-color: #1f3a5f; }
+        .input-answer.filled { background-color: #f5f8ff; border-color: #1f3a5f; }
+        
+        .highlight { 
+            background-color: #ffd700; padding: 1px 3px; border-radius: 2px; 
+            cursor: pointer; display: inline; color: #000; position: relative; 
+        }
+        .note-marker { 
+            position: absolute; top: -8px; right: -8px; width: 18px; height: 18px; 
+            background: #1f3a5f; color: white; border-radius: 50%; font-size: 11px; 
+            display: flex; align-items: center; justify-content: center; z-index: 10; 
+        }
+        .context-menu { 
+            position: absolute; background: #fff; border: 1px solid #ddd; 
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1); z-index: 9999; display: none; min-width: 180px; 
+        }
+        .context-menu div { padding: 10px 14px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f5f5f5; }
+        .context-menu div:last-child { border-bottom: none; }
+        .context-menu div:hover { background: #f5f5f5; }
+        
+        .note-box { 
+            position: absolute; width: 260px; min-height: 80px; 
+            background: #fffde7; border: 1px solid #f9d423; border-radius: 6px; 
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1); z-index: 9990; display: none; 
+        }
+        .note-header { 
+            background: #f9d423; padding: 6px 10px; cursor: move; 
+            display: flex; justify-content: space-between; align-items: center; font-weight: bold; 
+        }
+        .note-close { cursor: pointer; font-size: 16px; }
+        .note-textarea { 
+            width: 100%; min-height: 60px; border: none; padding: 10px; 
+            font-size: 14px; resize: vertical; background: transparent; outline: none; 
+        }
+        
+        .bottom-nav { 
+            min-height: 48px; border-top: 1px solid #eee; display: flex; 
+            align-items: center; justify-content: space-between; padding: 8px 15px; 
+            position: sticky; bottom: 0; background: #fff; z-index: 90; 
+            flex-wrap: wrap; gap: 6px 12px;
+        }
+        .nav-group { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; }
+        .part-label { font-size: 10px; color: #1f3a5f; margin: 0 4px; white-space: nowrap; }
+        .q-indicator {
+            width: 24px; height: 24px; border: 1px solid #ddd; background: #fff;
+            text-align: center; line-height: 22px; font-size: 10px; cursor: pointer; border-radius: 3px;
+        }
+        .q-indicator.current { background: #eaf1fa; border-color: #1f3a5f; border-width: 2px; font-weight: bold; }
+        .q-indicator.answered { background: #10b981; color: #fff; border-color: #10b981; }
+        .back-btn, .next-passage-btn, .clear-btn {
+            padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;
+            font-size: 14px; font-weight: bold; text-decoration: none;
+        }
+        .back-btn { background: #6b7280; color: #fff; }
+        .next-passage-btn { background: #10b981; color: #fff; white-space: nowrap; flex-shrink: 0; }
+        .clear-btn { background: #ef4444; color: #fff; margin-left: 8px; }
+    </style>
+</head>
+<body>
+    <div class="context-menu" id="contextMenu">
+        <div id="menuHighlight">🖍️ Highlight</div>
+        <div id="menuAddNote">📝 Add Note</div>
+        <div id="menuRemove">❌ Remove Highlight</div>
+    </div>
+    
+    <div class="note-box" id="noteBox">
+        <div class="note-header" id="noteDragHandle">
+            <span>📝 Note</span>
+            <span class="note-close" id="noteClose">×</span>
+        </div>
+        <textarea class="note-textarea" id="noteText" placeholder="Type your note here…"></textarea>
+    </div>
+    
+    <div class="top-bar">
+        <img src="ielts-logo.png" alt="IELTS Logo" class="logo">
+    </div>
+    <div class="main-grid" id="mainGrid">
+        <div class="passage-pane" id="passagePane">
+            <div class="exam-title">READING — CAMBRIDGE TEST</div>
+            <h2>READING PASSAGE 1</h2>
+            <div class="instruction">You should spend about 20 minutes on Questions 1–13, which are based on Reading Passage 1 below.</div>
+            <h3 style="color:#1f3a5f; margin:15px 0; font-size:22px; text-align:center;">Manatees</h3>
+            <div class="passage-text" id="passageArea">
+<p>Manatees, also known as sea cows, are aquatic mammals that belong to a group of animals called Sirenia. This group also contains dugongs. Dugongs and manatees look quite alike - they are similar in size, colour and shape, and both have flexible flippers for forelimbs. However, the manatee has a broad, rounded tail, whereas the dugong's is fluked, like that of a whale. There are three species of manatees: The West Indian manatee (<i>Trichechus manatus</i>), the African manatee (<i>Trichechus senegalensis</i>) and the Amazonian manatee (<i>Trichechus inunguis</i>).</p>
+<p>Unlike most mammals, manatees have only six bones in their neck - most others, including humans and giraffes, have seven. This short neck allows a manatee to move its head up and down, but not side to side. To see something on its left or its right, a manatee must turn its entire body, steering with its flippers. Manatees have pectoral flippers but no back limbs, only a tail for propulsion. They do have pelvic bones, however - a leftover from their evolution from a four-legged to a fully aquatic animal. Manatees share some visual similarities to elephants. Like elephants, manatees have thick, wrinkled skin. They also have some hairs covering their bodies which help them sense vibrations in the water around them.</p>
+<p>Seagrasses and other marine plants make up most of a manatee's diet. Manatees spend about eight hours each day grazing and uprooting plants. They eat up to 15% of their weight in food each day. African manatees are omnivorous - studies have shown that molluscs and fish make up a small part of their diets. West Indian and Amazonian manatees are both herbivores.</p>
+<p>Manatees' teeth are all molars - flat, rounded teeth for grinding food. Due to manatees' abrasive aquatic plant diet, these teeth get worn down and they eventually fall out, so they continually grow new teeth that get pushed forward to replace the ones they lose. Instead of having incisors to grasp their food, manatees have lips which function like a pair of hands to help tear food away from the seafloor.</p>
+<p>Manatees are fully aquatic, but as mammals, they need to come up to the surface to breathe. When awake, they typically surface every two to four minutes, but they can hold their breath for much longer. Adult manatees sleep underwater for 10–12 hours a day, but they come up for air every 15–20 minutes. Active manatees need to breathe more frequently. It's thought that manatees use their muscular diaphragm and breathing to adjust their buoyancy. They may use diaphragm contractions to compress and store gas in folds in their large intestine to help them float.</p>
+<p>The West Indian manatee reaches about 3.5 metres long and weighs on average around 500 kilogrammes. It moves between fresh water and salt water, taking advantage of coastal mangroves and coral reefs, rivers, lakes and inland lagoons. There are two subspecies of West Indian manatee: The Antillean manatee is found in waters from the Bahamas to Brazil, whereas the Florida manatee is found in US waters, although some individuals have been recorded in the Bahamas. In winter, the Florida manatee is typically restricted to Florida waters. When the ambient water temperature drops below 20°C, it takes refuge in naturally and artificially warmed water, such as at the warm-water outfalls from powerplants.</p>
+<p>The African manatee is also about 3.5 metres long and found in the sea along the west coast of Africa, from Mauritania down to Angola. The species also makes use of rivers, with the mammals seen in landlocked countries such as Mali and Niger.</p>
+<p>The Amazonian manatee is the smallest species, though it is still a big animal. It grows to about 2.5 metres long and 350 kilogrammes. Amazonian manatees favour calm, shallow waters that are above 23°C. This species is found in fresh water in the Amazon Basin in Brazil, as well as in Colombia, Ecuador and Peru.</p>
+<p>All three manatee species are endangered or at a heightened risk of extinction. The African manatee and Amazonian manatee are both listed as Vulnerable by the International Union for Conservation of Nature (IUCN). It is estimated that 140,000 Amazonian manatees were killed between 1935 and 1954 for their meat, fat and skin, with the latter used to make leather. In more recent years, African manatee decline has been tied to incidental capture in fishing nets and hunting. Manatee hunting is now illegal in every country the African species is found in.</p>
+<p>The two subspecies of West Indian manatee are listed as Endangered by the IUCN. Both are also expected to undergo a decline of 20% over the next 40 years. A review of almost 1,800 cases of entanglement in fishing nets and of plastic consumption among manatees in US waters from 2009 to 2020 found that at least 700 cases involved manatees. The chief cause of death in Florida manatees is boat strikes. However, laws in certain parts of Florida now limit boat speeds during the winter, allowing slow-moving manatees more time to respond.</p>
+            </div>
+        </div>
+        <div class="divider" id="divider"></div>
+        <div class="questions-pane" id="questionsPane">
+            <div class="questions-block" id="questionsArea">
+                <h3>Questions 1–6</h3>
+                <div class="instruction">Complete the notes below.<br>Choose <strong>ONE WORD AND/OR A NUMBER</strong> from the passage for each answer.<br>Write your answers in boxes 1–6 on your answer sheet.</div>
+
+                <h4 style="margin:12px 0 8px; color:#1f3a5f;">Manatees</h4>
+
+                <div class="q-row" id="q1">
+                    <span class="q-num">1</span>
+                    <span>look similar to dugongs, but with a differently shaped</span>
+                    <input type="text" class="input-answer" id="ans1" placeholder="ONE WORD/NUMBER">
+                </div>
+
+                <div class="q-row" id="q2">
+                    <span class="q-num">2</span>
+                    <span>need to use their .................... to help to turn their bodies around in order
+to look sideways</span>
+                    <input type="text" class="input-answer" id="ans2" placeholder="ONE WORD/NUMBER">
+                </div>
+                <div class="q-row" id="q3">
+                    <span class="q-num">3</span>
+                    <span>sense vibrations in the water by means of .................... on their skin</span>
+                    <input type="text" class="input-answer" id="ans3" placeholder="ONE WORD/NUMBER">
+                </div>
+
+                <div class="q-row" id="q4">
+                    <span class="q-num">4</span>
+                    <span>eat mainly aquatic vegetation, such as ....................</span>
+                    <input type="text" class="input-answer" id="ans4" placeholder="ONE WORD/NUMBER">
+                </div>
+
+                <div class="q-row" id="q5">
+                    <span class="q-num">5</span>
+                    <span>grasp and pull up plants with their ....................</span>
+                    <input type="text" class="input-answer" id="ans5" placeholder="ONE WORD/NUMBER">
+                </div>
+
+                <div class="q-row" id="q6">
+                    <span class="q-num">6</span>
+                    <span>may regulate the .................... of their bodies by using muscles of diaphragm to store air internally</span>
+                    <input type="text" class="input-answer" id="ans6" placeholder="ONE WORD/NUMBER">
+                </div>
+            </div>
+
+            <div class="questions-block" id="tfArea">
+                <h3>Questions 7–13</h3>
+                <div class="instruction">Do the following statements agree with the information given in Reading Passage 1?<br><br>In boxes 7–13 on your answer sheet, write:<br><br><strong>TRUE</strong> &nbsp;&nbsp; if the statement agrees with the information<br><strong>FALSE</strong> &nbsp; if the statement contradicts the information<br><strong>NOT GIVEN</strong> &nbsp; if there is no information on this</div>
+
+                <div class="q-row" id="q7">
+                    <span class="q-num">7</span>
+                    <span>West Indian manatees can be found in a variety of different aquatic habitats.</span>
+                    <input type="text" class="ans-box" id="ans7" placeholder="">
+                </div>
+                <div class="q-row" id="q8">
+                    <span class="q-num">8</span>
+                    <span>The Florida manatee lives in warmer waters than the Antillean manatee.</span>
+                    <input type="text" class="ans-box" id="ans8" placeholder="">
+                </div>
+                <div class="q-row" id="q9">
+                    <span class="q-num">9</span>
+                    <span>The African manatee's range is limited to coastal waters between the West African countries of Mauritania and Angola.</span>
+                    <input type="text" class="ans-box" id="ans9" placeholder="">
+                </div>
+                <div class="q-row" id="q10">
+                    <span class="q-num">10</span>
+                    <span>The extent of the loss of Amazonian manatees in the mid-twentieth century was only revealed many years later.</span>
+                    <input type="text" class="ans-box" id="ans10" placeholder="">
+                </div>
+                <div class="q-row" id="q11">
+                    <span class="q-num">11</span>
+                    <span>It is predicted that West Indian manatee populations will fall in the coming decades.</span>
+                    <input type="text" class="ans-box" id="ans11" placeholder="">
+                </div>
+                <div class="q-row" id="q12">
+                    <span class="q-num">12</span>
+                    <span>The risk to manatees from entanglement and plastic consumption increased significantly in the period 2009–2020.</span>
+                    <input type="text" class="ans-box" id="ans12" placeholder="">
+                </div>
+                <div class="q-row" id="q13">
+                    <span class="q-num">13</span>
+                    <span>There is some legislation in place which aims to reduce the likelihood of boat strikes on manatees in Florida.</span>
+                    <input type="text" class="ans-box" id="ans13" placeholder="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-nav">
+        <div style="display:flex; gap:8px; align-items:center;">
+            <a href="reading-intro.html" class="back-btn">← Back</a>
+            <button class="clear-btn" id="clearAllBtn">🗑️ Clear</button>
+        </div>
+        <div class="nav-group">
+            <span class="part-label">P1:</span>
+            <div class="q-indicator current" data-q="1">1</div>
+            <div class="q-indicator" data-q="2">2</div>
+            <div class="q-indicator" data-q="3">3</div>
+            <div class="q-indicator" data-q="4">4</div>
+            <div class="q-indicator" data-q="5">5</div>
+            <div class="q-indicator" data-q="6">6</div>
+            <div class="q-indicator" data-q="7">7</div>
+            <div class="q-indicator" data-q="8">8</div>
+            <div class="q-indicator" data-q="9">9</div>
+            <div class="q-indicator" data-q="10">10</div>
+            <div class="q-indicator" data-q="11">11</div>
+            <div class="q-indicator" data-q="12">12</div>
+            <div class="q-indicator" data-q="13">13</div>
+            <span class="part-label">P2:</span>
+            <div class="q-indicator" data-q="14">14</div>
+            <div class="q-indicator" data-q="15">15</div>
+            <div class="q-indicator" data-q="16">16</div>
+            <div class="q-indicator" data-q="17">17</div>
+            <div class="q-indicator" data-q="18">18</div>
+            <div class="q-indicator" data-q="19">19</div>
+            <div class="q-indicator" data-q="20">20</div>
+            <div class="q-indicator" data-q="21">21</div>
+            <div class="q-indicator" data-q="22">22</div>
+            <div class="q-indicator" data-q="23">23</div>
+            <div class="q-indicator" data-q="24">24</div>
+            <div class="q-indicator" data-q="25">25</div>
+            <div class="q-indicator" data-q="26">26</div>
+            <span class="part-label">P3:</span>
+            <div class="q-indicator" data-q="27">27</div>
+            <div class="q-indicator" data-q="28">28</div>
+            <div class="q-indicator" data-q="29">29</div>
+            <div class="q-indicator" data-q="30">30</div>
+            <div class="q-indicator" data-q="31">31</div>
+            <div class="q-indicator" data-q="32">32</div>
+            <div class="q-indicator" data-q="33">33</div>
+            <div class="q-indicator" data-q="34">34</div>
+            <div class="q-indicator" data-q="35">35</div>
+            <div class="q-indicator" data-q="36">36</div>
+            <div class="q-indicator" data-q="37">37</div>
+            <div class="q-indicator" data-q="38">38</div>
+            <div class="q-indicator" data-q="39">39</div>
+            <div class="q-indicator" data-q="40">40</div>
+        </div>
+        <a href="ielts-reading-passage2.html" class="next-passage-btn">Next →</a>
+    </div>
+<script>
+const STORAGE_KEY = 'Manatees_Test_Reading';
+const passageId = 'ielts-reading-passage1';
+
+// --- Draggable Divider ---
+const divider = document.getElementById('divider');
+const passagePane = document.getElementById('passagePane');
+const questionsPane = document.getElementById('questionsPane');
+const MIN_WIDTH = 25, MAX_WIDTH = 75;
+let savedSplit = localStorage.getItem(`${STORAGE_KEY}_split`);
+let passagePercent = savedSplit ? parseFloat(savedSplit) : 50;
+
+function applySplit() {
+    passagePane.style.width = `calc(${passagePercent}% - 6px)`;
+    questionsPane.style.width = `calc(${100 - passagePercent}% - 6px)`;
+}
+applySplit();
+
+let isDraggingDivider = false;
+divider.addEventListener('mousedown', e => {
+    isDraggingDivider = true;
+    divider.classList.add('active');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+});
+document.addEventListener('mousemove', e => {
+    if (!isDraggingDivider) return;
+    const rect = document.getElementById('mainGrid').getBoundingClientRect();
+    let newPercent = ((e.clientX - rect.left) / rect.width) * 100;
+    newPercent = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, newPercent));
+    passagePercent = newPercent;
+    applySplit();
+});
+document.addEventListener('mouseup', () => {
+    if (isDraggingDivider) {
+        isDraggingDivider = false;
+        divider.classList.remove('active');
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        localStorage.setItem(`${STORAGE_KEY}_split`, passagePercent);
+    }
+});
+
+// --- Highlight & Note System ---
+const noteBox = document.getElementById('noteBox');
+const noteText = document.getElementById('noteText');
+const noteClose = document.getElementById('noteClose');
+const contextMenu = document.getElementById('contextMenu');
+let currentRange = null, activeHighlight = null;
+const highlightAreas = ['passageArea', 'questionsArea', 'tfArea'];
+
+function isInHighlightArea(node) {
+    return highlightAreas.some(id => {
+        const el = document.getElementById(id);
+        return el && el.contains(node);
+    });
+}
+
+function isSelectionValid(sel) {
+    if (!sel || sel.isCollapsed || !sel.toString().trim()) return false;
+    try {
+        return isInHighlightArea(sel.getRangeAt(0).commonAncestorContainer);
+    } catch { return false; }
+}
+
+function saveHighlightsData() {
+    const highlights = [];
+    document.querySelectorAll('.highlight').forEach(hl => {
+        highlights.push({
+            text: hl.textContent,
+            note: hl.getAttribute('data-note') || ''
+        });
+    });
+    localStorage.setItem(`${passageId}_highlights`, JSON.stringify(highlights));
+}
+
+document.addEventListener('contextmenu', e => {
+    let el = e.target, clickedHighlight = null;
+    while (el) {
+        if (el.classList && el.classList.contains('highlight')) {
+            clickedHighlight = el; break;
+        }
+        el = el.parentElement;
+    }
+    if (clickedHighlight) {
+        activeHighlight = clickedHighlight;
+        currentRange = null;
+        contextMenu.style.left = e.pageX + 'px';
+        contextMenu.style.top = e.pageY + 'px';
+        contextMenu.style.display = 'block';
+        e.preventDefault();
+        return;
+    }
+    const sel = window.getSelection();
+    if (isSelectionValid(sel)) {
+        currentRange = sel.getRangeAt(0).cloneRange();
+        activeHighlight = null;
+        contextMenu.style.left = e.pageX + 'px';
+        contextMenu.style.top = e.pageY + 'px';
+        contextMenu.style.display = 'block';
+        e.preventDefault();
+    } else {
+        contextMenu.style.display = 'none';
+    }
+});
+
+document.addEventListener('click', e => {
+    if (!contextMenu.contains(e.target)) contextMenu.style.display = 'none';
+});
+
+document.getElementById('menuHighlight').addEventListener('click', () => {
+    contextMenu.style.display = 'none';
+    if (!currentRange) return;
+    try {
+        const span = document.createElement('span');
+        span.className = 'highlight';
+        span.setAttribute('data-note', '');
+        currentRange.surroundContents(span);
+        window.getSelection().removeAllRanges();
+        saveHighlightsData();
+    } catch { alert('⚠️ Please select smaller sections of text.'); }
+});
+
+document.getElementById('menuAddNote').addEventListener('click', () => {
+    contextMenu.style.display = 'none';
+    if (!activeHighlight && currentRange) {
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            span.setAttribute('data-note', '');
+            currentRange.surroundContents(span);
+            activeHighlight = span;
+            window.getSelection().removeAllRanges();
+        } catch { alert('⚠️ Please select smaller sections of text.'); return; }
+    }
+    if (!activeHighlight) return;
+    const rect = activeHighlight.getBoundingClientRect();
+    noteBox.style.left = Math.min(rect.right + 10, window.innerWidth - 280) + 'px';
+    noteBox.style.top = Math.min(rect.top, window.innerHeight - 100) + 'px';
+    noteBox.style.display = 'block';
+    noteText.value = activeHighlight.getAttribute('data-note') || '';
+    noteText.focus();
+});
+
+document.getElementById('menuRemove').addEventListener('click', () => {
+    contextMenu.style.display = 'none';
+    if (!activeHighlight) return;
+    const parent = activeHighlight.parentNode;
+    while (activeHighlight.firstChild) {
+        parent.insertBefore(activeHighlight.firstChild, activeHighlight);
+    }
+    parent.removeChild(activeHighlight);
+    parent.normalize();
+    activeHighlight = null;
+    saveHighlightsData();
+});
+
+noteClose.addEventListener('click', () => {
+    if (activeHighlight) {
+        activeHighlight.setAttribute('data-note', noteText.value);
+        saveHighlightsData();
+    }
+    noteBox.style.display = 'none';
+    activeHighlight = null;
+});
+
+// Drag note box with screen boundaries
+let isDraggingNote = false, noteOffsetX = 0, noteOffsetY = 0;
+document.getElementById('noteDragHandle').addEventListener('mousedown', e => {
+    isDraggingNote = true;
+    const rect = noteBox.getBoundingClientRect();
+    noteOffsetX = e.clientX - rect.left;
+    noteOffsetY = e.clientY - rect.top;
+});
+document.addEventListener('mousemove', e => {
+    if (!isDraggingNote) return;
+    let newX = e.clientX - noteOffsetX;
+    let newY = e.clientY - noteOffsetY;
+    // Keep note box on screen
+    newX = Math.max(0, Math.min(newX, window.innerWidth - 260));
+    newY = Math.max(0, Math.min(newY, window.innerHeight - 80));
+    noteBox.style.left = newX + 'px';
+    noteBox.style.top = newY + 'px';
+});
+document.addEventListener('mouseup', () => isDraggingNote = false);
+
+// --- Answers & Navigation ---
+let currentQuestionNum = 1;
+
+function setCurrentQuestion(qNum) {
+    document.querySelectorAll('.q-row.current').forEach(r => r.classList.remove('current'));
+    document.querySelectorAll('.q-indicator.current').forEach(b => b.classList.remove('current'));
+    currentQuestionNum = qNum;
+    const row = document.getElementById(`q${qNum}`);
+    const indicator = document.querySelector(`.q-indicator[data-q="${qNum}"]`);
+    if (row) row.classList.add('current');
+    if (indicator) indicator.classList.add('current');
+}
+
+function updateStatus() {
+    for (let q = 1; q <= 40; q++) {
+        const btn = document.querySelector(`.q-indicator[data-q="${q}"]`);
+        if (!btn) continue;
+        const val = localStorage.getItem(`${STORAGE_KEY}_q${q}`) || '';
+        btn.classList.toggle
+('answered', val.trim().length > 0);
+    }
+}
+
+document.querySelectorAll('.q-indicator').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const qNum = parseInt(btn.dataset.q);
+        setCurrentQuestion(qNum);
+        const target = document.getElementById(`q${qNum}`);
+        if (target) target.scrollIntoView({behavior:'smooth', block:'center'});
+    });
+});
+
+function saveAnswer(q, val) {
+    localStorage.setItem(`${STORAGE_KEY}_q${q}`, val.trim());
+    updateStatus();
+}
+
+// Q1–6 — Notes completion (no auto-uppercase)
+for (let q = 1; q <= 6; q++) {
+    const box = document.getElementById(`ans${q}`);
+    box.addEventListener('input', () => {
+        const val = box.value.trim();
+        box.value = val;
+        box.classList.toggle('filled', val !== '');
+        saveAnswer(q, val);
+    });
+}
+
+// Q7–13 — TRUE/FALSE/NOT GIVEN (auto-uppercase)
+for (let q = 7; q <= 13; q++) {
+    const box = document.getElementById(`ans${q}`);
+    box.addEventListener('input', () => {
+        const val = box.value.toUpperCase();
+        box.value = val;
+        box.classList.toggle('filled', val.trim() !== '');
+        saveAnswer(q, val);
+    });
+}
+
+function clearAllData() {
+    if (!confirm('⚠️ Are you sure you want to clear ALL answers, highlights, and notes? This cannot be undone.')) return;
+    for (let q = 1; q <= 40; q++) localStorage.removeItem(`${STORAGE_KEY}_q${q}`);
+    localStorage.removeItem(`${passageId}_highlights`);
+    localStorage.removeItem(`${STORAGE_KEY}_split`);
+    document.querySelectorAll('input').forEach(i => { i.value = ''; i.classList.remove('filled'); });
+    document.querySelectorAll('.highlight').forEach(hl => {
+        const parent = hl.parentNode;
+        while (hl.firstChild) parent.insertBefore(hl.firstChild, hl);
+        parent.removeChild(hl);
+        parent.normalize();
+    });
+    location.reload();
+}
+document.getElementById('clearAllBtn').addEventListener('click', clearAllData);
+
+// Load highlights function
+function loadHighlightsData() {
+    const saved = localStorage.getItem(`${passageId}_highlights`);
+    if (!saved) return;
+    // Note: Full highlight restoration would need more complex logic — basic structure ready
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Load saved answers — Q1–6
+    for (let q = 1; q <= 6; q++) {
+        const box = document.getElementById(`ans${q}`);
+        const saved = localStorage.getItem(`${STORAGE_KEY}_q${q}`) || '';
+        if (saved) { box.value = saved; box.classList.add('filled'); }
+    }
+    // Load saved answers — Q7–13
+    for (let q = 7; q <= 13; q++) {
+        const box = document.getElementById(`ans${q}`);
+        const saved = localStorage.getItem(`${STORAGE_KEY}_q${q}`) || '';
+        if (saved) { box.value = saved; box.classList.add('filled'); }
+    }
+    
+    loadHighlightsData();
+    setCurrentQuestion(1);
+    updateStatus();
+});
+</script>
+</body>
+</html>
