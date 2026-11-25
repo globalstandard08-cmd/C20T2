@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IELTS Reading — Invasion of the Robot Umpires</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+            * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
         html, body { background-color: #ffffff; height: 100%; }
         
         .top-bar { 
@@ -15,12 +14,11 @@
         }
         .top-bar-title { font-size: 20px; font-weight: bold; color: #1f3a5f; }
         
-        .main-grid { display: flex; min-height: calc(100vh - 75px - 60px); width: 100%; }
+        .main-grid { display: flex; min-height: calc(100vh - 140px); width: 100%; }
         
         .passage-pane { 
             width: 50%; min-width: 300px; background: #ffffff; 
             overflow-y: auto; padding: 25px; 
-            max-height: calc(100vh - 75px - 60px); 
         }
         .exam-title {
             text-align: center; color: #1f3a5f; font-size: 18px; font-weight: bold;
@@ -49,7 +47,6 @@
         .questions-pane { 
             width: 50%; min-width: 300px; background: #ffffff; 
             overflow-y: auto; padding: 25px; 
-            max-height: calc(100vh - 75px - 60px); 
         }
         .questions-block { margin-bottom: 35px; }
         .questions-block h3 { color: #1f3a5f; margin-bottom: 12px; font-size: 18px; }
@@ -60,10 +57,12 @@
         }
         .q-num { font-weight: bold; min-width: 28px; color: #1f3a5f; flex-shrink: 0; }
         
-        /* YES/NO/NOT GIVEN */
-        .ynog-options { display: flex; gap: 15px; margin: 8px 0 0 0; flex-wrap: wrap; }
-        .ynog-label { padding: 6px 16px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-size: 15px; }
-        .ynog-label.selected { background: #1f3a5f; color: #fff; border-color: #1f3a5f; }
+        /* ✅ UPDATED: YES/NO/NOT GIVEN — Real Radio Buttons like Exam */
+        .ynog-options { display: flex; gap: 25px; margin: 8px 0 0 0; flex-wrap: wrap; }
+        .ynog-option { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 15px; }
+        .ynog-option input[type="radio"] { 
+            width: 18px; height: 18px; cursor: pointer; accent-color: #1f3a5f;
+        }
         
         /* Summary */
         .match-list { margin: 15px 0; }
@@ -73,7 +72,7 @@
         /* Multiple Choice */
         .mc-option { display: flex; align-items: flex-start; gap: 10px; margin: 10px 0; font-size: 15px; padding-left: 38px; }
         .mc-letter { font-weight: bold; min-width: 24px; color: #1f3a5f; }
-        .mc-radio { width: 20px; height: 20px; cursor: pointer; accent-color: #1f3a5f; margin-right: 8px; }
+        .mc-radio { width: 18px; height: 18px; cursor: pointer; accent-color: #1f3a5f; margin-right: 8px; }
         
         /* Highlight & Notes */
         .highlight { background-color: #ffd700; padding: 1px 3px; border-radius: 2px; cursor: pointer; }
@@ -91,28 +90,34 @@
         .note-close { cursor: pointer; font-size: 16px; }
         .note-textarea { width: 100%; min-height: 60px; border: none; padding: 10px; font-size: 14px; outline: none; background: transparent; }
         
-        /* Bottom Navigation */
-        .bottom-nav { 
-            min-height: 60px; border-top: 1px solid #eee; display: flex; 
-            align-items: center; justify-content: space-between; padding: 10px 15px; 
-            position: sticky; bottom: 0; background: #fff; z-index: 90; flex-wrap: wrap; gap: 8px;
+        /* ✅ UPDATED: Navigation Bar — Smaller Buttons */
+        .nav-bar {
+            border-top: 1px solid #eee; border-bottom: 1px solid #eee;
+            padding: 8px 15px; background: #fafafa;
         }
-        .nav-group { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-        .part-label { font-size: 11px; color: #1f3a5f; margin: 0 6px; font-weight: bold; }
+        .nav-group { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; }
+        .part-label { font-size: 11px; color: #1f3a5f; margin: 0 4px; font-weight: bold; }
         .q-indicator {
-            width: 28px; height: 28px; border: 1px solid #ddd; background: #fff;
-            text-align: center; line-height: 26px; font-size: 12px; cursor: pointer; border-radius: 3px;
+            width: 24px; height: 24px; border: 1px solid #ddd; background: #fff;
+            text-align: center; line-height: 22px; font-size: 11px; cursor: pointer; border-radius: 2px;
         }
         .q-indicator.current { background: #eaf1fa; border-color: #1f3a5f; border-width: 2px; font-weight: bold; }
         .q-indicator.answered { background: #10b981; color: #fff; border-color: #10b981; }
+        
+        /* ✅ NEW: Bottom Button Bar — Below Navigation */
+        .button-bar {
+            padding: 10px 15px; display: flex; justify-content: space-between; align-items: center;
+            background: #fff;
+        }
         .back-btn, .next-passage-btn, .clear-btn {
-            padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;
+            padding: 7px 14px; border: none; border-radius: 4px; cursor: pointer;
             font-size: 14px; font-weight: bold; text-decoration: none;
         }
         .back-btn { background: #6b7280; color: #fff; }
         .next-passage-btn { background: #10b981; color: #fff; }
         .clear-btn { background: #ef4444; color: #fff; margin-left: 8px; }
     </style>
+
 </head>
 <body>
     <!-- Highlight/Note Context Menu -->
@@ -163,7 +168,7 @@
                 <div class="divider" id="divider"></div>
         <div class="questions-pane" id="questionsPane">
 
-            <!-- Questions 27–32: YES / NO / NOT GIVEN -->
+                        <!-- Questions 27–32: YES / NO / NOT GIVEN -->
             <div class="questions-block" id="ynogArea">
                 <h3>Questions 27–32</h3>
                 <div class="instruction">Do the following statements agree with the claims of the writer in Reading Passage 3?<br><br>
@@ -174,61 +179,97 @@
 
                 <div class="q-row" id="q27">
                     <span class="q-num">27.</span>
-                    <span id="q27"></span>When DeJesus first used ABS, he shared decision-making about strikes with it.
+                    <span>When DeJesus first used ABS, he shared decision-making about strikes with it.</span>
                     <div class="ynog-options">
-                        <label class="ynog-label" data-q="27" data-val="YES">YES</label>
-                        <label class="ynog-label" data-q="27" data-val="NO">NO</label>
-                        <label class="ynog-label" data-q="27" data-val="NOT GIVEN">NOT GIVEN</label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q27" value="YES"> YES
+                        </label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q27" value="NO"> NO
+                        </label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q27" value="NOT GIVEN"> NOT GIVEN
+                        </label>
                     </div>
                 </div>
 
                 <div class="q-row" id="q28">
                     <span class="q-num">28.</span>
-                    <span id="q28"></span>MLB considered it necessary to amend the size of the strike zone when criticisms were received from players.
+                    <span>MLB considered it necessary to amend the size of the strike zone when criticisms were received from players.</span>
                     <div class="ynog-options">
-                        <label class="ynog-label" data-q="28" data-val="YES">YES</label>
-                        <label class="ynog-label" data-q="28" data-val="NO">NO</label>
-                        <label class="ynog-label" data-q="28" data-val="NOT GIVEN">NOT GIVEN</label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q28" value="YES"> YES
+                        </label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q28" value="NO"> NO
+                        </label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q28" value="NOT GIVEN"> NOT GIVEN
+                        </label>
                     </div>
                 </div>
 
                 <div class="q-row" id="q29">
                     <span class="q-num">29.</span>
-                    <span id="q29"></span>MLB is keen to justify the money spent on improving the accuracy of ABS's calculations.
+                    <span>MLB is keen to justify the money spent on improving the accuracy of ABS's calculations.</span>
                     <div class="ynog-options">
-                        <label class="ynog-label" data-q="29" data-val="YES">YES</label>
-                        <label class="ynog-label" data-q="29" data-val="NO">NO</label>
-                        <label class="ynog-label" data-q="29" data-val="NOT GIVEN">NOT GIVEN</label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q29" value="YES"> YES
+                        </label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q29" value="NO"> NO
+                        </label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q29" value="NOT GIVEN"> NOT GIVEN
+                        </label>
                     </div>
                 </div>
 
                 <div class="q-row" id="q30">
                     <span class="q-num">30.</span>
-                    <span id="q30"></span>The hundred-mile-an-hour fastball led to a more exciting style of play.
+                    <span>The hundred-mile-an-hour fastball led to a more exciting style of play.</span>
                     <div class="ynog-options">
-                        <label class="ynog-label" data-q="30" data-val="YES">YES</label>
-                        <label class="ynog-label" data-q="30" data-val="NO">NO</label>
-                        <label class="ynog-label" data-q="30" data-val="NOT GIVEN">NOT GIVEN</label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q30" value="YES"> YES
+                        </label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q30" value="NO"> NO
+                        </label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q30" value="NOT GIVEN"> NOT GIVEN
+                        </label>
                     </div>
                 </div>
 
                 <div class="q-row" id="q31">
                     <span class="q-num">31.</span>
-                    <span id="q31"></span>The differing proposals for alterations to the baseball bat led to fierce debate on Sword's team.
+                    <span>The differing proposals for alterations to the baseball bat led to fierce debate on Sword's team.</span>
                     <div class="ynog-options">
-                        <label class="ynog-label" data-q="31" data-val="YES">YES</label>
-                        <label class="ynog-label" data-q="31" data-val="NO">NO</label>
-                        <label class="ynog-label" data-q="31" data-val="NOT GIVEN">NOT GIVEN</label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q31" value="YES"> YES
+                        </label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q31" value="NO"> NO
+                        </label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q31" value="NOT GIVEN"> NOT GIVEN
+                        </label>
                     </div>
                 </div>
 
                 <div class="q-row" id="q32">
                     <span class="q-num">32.</span>
-                    <span id="q32"></span>ABS makes changes to the shape of the strike zone feasible.
+                    <span>ABS makes changes to the shape of the strike zone feasible.</span>
                     <div class="ynog-options">
-                        <label class="ynog-label" data-q="32" data-val="YES">YES</label>
-                        <label class="ynog-label" data-q="32" data-val="NO">NO</label>
-                        <label class="ynog-label" data-q="32" data-val="NOT GIVEN">NOT GIVEN</label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q32" value="YES"> YES
+                        </label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q32" value="NO"> NO
+                        </label>
+                        <label class="ynog-option">
+                            <input type="radio" name="q32" value="NOT GIVEN"> NOT GIVEN
+                        </label>
                     </div>
                 </div>
             </div>
@@ -389,12 +430,8 @@
             </div>
         </div>
     </div>
-       <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <div style="display:flex; gap:8px; align-items:center;">
-            <a href="ielts-reading-passage2.html" class="back-btn">← Back</a>
-            <button class="clear-btn" id="clearAllBtn">🗑️ Clear</button>
-        </div>
+           <!-- ✅ Question Numbers Bar -->
+    <div class="nav-bar">
         <div class="nav-group">
             <span class="part-label">P1:</span>
             <div class="q-indicator" data-q="1">1</div>
@@ -440,9 +477,20 @@
             <div class="q-indicator" data-q="39">39</div>
             <div class="q-indicator" data-q="40">40</div>
         </div>
-        <a href="#" class="next-passage-btn">Finish →</a>
     </div>
-    <script>
+    
+    <!-- ✅ Buttons: Back + Clear on left, Writing on right -->
+    <div class="button-bar">
+        <div>
+            <a href="ielts-reading-passage2.html" class="back-btn">← Back</a>
+            <button class="clear-btn" id="clearAllBtn">🗑️ Clear</button>
+        </div>
+        <a href="#" class="next-passage-btn">Writing →</a>
+    </div>
+    
+    <!-- JAVASCRIPT - Part 5 goes here -->
+
+   <script>
 const STORAGE_KEY = 'RobotUmpires_Test_Reading';
 const passageId = 'ielts-reading-passage3';
 
@@ -647,7 +695,8 @@ function updateStatus() {
         let hasAnswer = false;
         
         if (q >= 27 && q <= 32) {
-            hasAnswer = !!localStorage.getItem(`${STORAGE_KEY}_q${q}`);
+            const checked = document.querySelector(`input[name="q${q}"]:checked`);
+            hasAnswer = !!checked;
         } else if (q >= 33 && q <= 37) {
             const val = localStorage.getItem(`${STORAGE_KEY}_q${q}`) || '';
             hasAnswer = val.trim().length > 0;
@@ -668,22 +717,22 @@ document.querySelectorAll('.q-indicator').forEach(btn => {
     });
 });
 
-// --- YES/NO/NOT GIVEN Handlers (Q27-32) ---
-document.querySelectorAll('.ynog-label').forEach(label => {
-    label.addEventListener('click', () => {
-        const q = label.dataset.q;
-        const val = label.dataset.val;
-        document.querySelectorAll(`.ynog-label[data-q="${q}"]`).forEach(l => l.classList.remove('selected'));
-        const current = localStorage.getItem(`${STORAGE_KEY}_q${q}`);
-        if (current === val) {
-            localStorage.removeItem(`${STORAGE_KEY}_q${q}`);
-        } else {
-            label.classList.add('selected');
-            localStorage.setItem(`${STORAGE_KEY}_q${q}`, val);
-        }
-        updateStatus();
+// --- ✅ YES/NO/NOT GIVEN Handlers — Real Radio Buttons (Q27-32) ---
+for (let q = 27; q <= 32; q++) {
+    document.querySelectorAll(`input[name="q${q}"]`).forEach(radio => {
+        radio.addEventListener('change', () => {
+            const val = radio.value;
+            const current = localStorage.getItem(`${STORAGE_KEY}_q${q}`);
+            if (current === val) {
+                radio.checked = false;
+                localStorage.removeItem(`${STORAGE_KEY}_q${q}`);
+            } else {
+                localStorage.setItem(`${STORAGE_KEY}_q${q}`, val);
+            }
+            updateStatus();
+        });
     });
-});
+}
 
 // --- Summary Dropdown Handlers (Q33-37) ---
 document.querySelectorAll('.summary-gap').forEach(select => {
@@ -716,7 +765,6 @@ function clearAllData() {
     localStorage.removeItem(`${STORAGE_KEY}_split`);
     document.querySelectorAll('input[type="radio"]').forEach(i => i.checked = false);
     document.querySelectorAll('select.summary-gap').forEach(s => s.value = '');
-    document.querySelectorAll('.ynog-label').forEach(l => l.classList.remove('selected'));
     document.querySelectorAll('.highlight').forEach(hl => {
         const parent = hl.parentNode;
         while (hl.firstChild) parent.insertBefore(hl.firstChild, hl);
@@ -732,7 +780,8 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let q = 27; q <= 32; q++) {
         const saved = localStorage.getItem(`${STORAGE_KEY}_q${q}`);
         if (saved) {
-            document.querySelectorAll(`.ynog-label[data-q="${q}"][data-val="${saved}"]`).forEach(l => l.classList.add('selected'));
+            const radio = document.querySelector(`input[name="q${q}"][value="${saved}"]`);
+            if (radio) radio.checked = true;
         }
     }
     for (let q = 33; q <= 37; q++) {
@@ -752,7 +801,3 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-
-
-
-    
