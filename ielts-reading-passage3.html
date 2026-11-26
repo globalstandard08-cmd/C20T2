@@ -227,10 +227,10 @@
 </head>
 <body>
     <!-- Context Menu & Note Box -->
-       <div class="context-menu" id="contextMenu">
+           <div class="context-menu" id="contextMenu">
         <div id="menuHighlight">🖍️ Highlight</div>
-        <div id="menuRemove">❌ Remove Highlight</div>
         <div id="menuAddNote">📝 Add Note</div>
+        <div id="menuRemove">❌ Remove Highlight</div>
     </div>
 
     
@@ -480,91 +480,141 @@ style="margin-bottom:12px;"><strong>Do the following statements agree with the i
         let highlightElements = [];
         let activeNote = null;
 
-        // Context Menu & Note Box
-        const contextMenu = document.getElementById('contextMenu');
+        // --- Highlight & Note System (from working sample) ---
         const noteBox = document.getElementById('noteBox');
-        const passageArea = document.getElementById('passageArea');
+        const noteText = document.getElementById('noteText');
+        const noteClose = document.getElementById('noteClose');
+        const contextMenu = document.getElementById('contextMenu');
+        let currentRange = null, activeHighlight = null;
+        const highlightAreas = ['passageArea'];
 
-        // Show Context Menu on Text Selection
-        passageArea.addEventListener('mouseup', function(e) {
-            const selection = window.getSelection();
-            const selectedText = selection.toString().trim();
-            if (selectedText.length > 0) {
+        function isInHighlightArea(node) {
+            return highlightAreas.some(id => {
+                const el = document.getElementById(id);
+                return el && el.contains(node);
+            });
+        }
+
+        function isSelectionValid(sel) {
+            if (!sel || sel.isCollapsed || !sel.toString().trim()) return false;
+            try {
+                return isInHighlightArea(sel.getRangeAt(0).commonAncestorContainer);
+            } catch { return false; }
+        }
+
+        // Show menu on RIGHT-CLICK — either on selected text OR on existing highlight
+        document.addEventListener('contextmenu', function(e) {
+            let el = e.target, clickedHighlight = null;
+            while (el) {
+                if (el.classList && el.classList.contains('highlight')) {
+                    clickedHighlight = el; break;
+                }
+                el = el.parentElement;
+            }
+            if (clickedHighlight) {
+                activeHighlight = clickedHighlight;
+                currentRange = null;
                 contextMenu.style.left = e.pageX + 'px';
                 contextMenu.style.top = e.pageY + 'px';
                 contextMenu.style.display = 'block';
+                e.preventDefault();
+                return;
             }
-        });
-
-        // Block browser default menu
-        passageArea.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-
-        // Hide Menu When Clicking Elsewhere
-        document.addEventListener('click', function(e) {
-            if (!contextMenu.contains(e.target)) {
+            const sel = window.getSelection();
+            if (isSelectionValid(sel)) {
+                currentRange = sel.getRangeAt(0).cloneRange();
+                activeHighlight = null;
+                contextMenu.style.left = e.pageX + 'px';
+                contextMenu.style.top = e.pageY + 'px';
+                contextMenu.style.display = 'block';
+                e.preventDefault();
+            } else {
                 contextMenu.style.display = 'none';
             }
         });
 
-        // Highlight Selected Text
-        document.getElementById('menuHighlight').addEventListener('click', function() {
-            const selection = window.getSelection();
-            if (selection.rangeCount > 0) {
-                const range = selection.getRangeAt(0);
-                const span = document.createElement('span');
-                span.className = 'highlight';
-                span.appendChild(range.cloneContents());
-                range.deleteContents();
-                range.insertNode(span);
-                highlightElements.push(span);
-            }
-            contextMenu.style.display = 'none';
-            window.getSelection().removeAllRanges();
+        // Hide menu when clicking elsewhere
+        document.addEventListener('click', function(e) {
+            if (!contextMenu.contains(e.target)) contextMenu.style.display = 'none';
         });
 
-        // Remove Highlight
-        document.getElementById('menuRemove').addEventListener('click', function() {
-            document.querySelectorAll('.highlight').forEach(function(el) {
-                const parent = el.parentNode;
-                parent.insertBefore(document.createTextNode(el.textContent), el);
-                parent.removeChild(el);
-                parent.normalize();
-            });
-            highlightElements = [];
+        // Highlight Selected Text
+        document.getElementById('menuHighlight').addEventListener('click', function() {
             contextMenu.style.display = 'none';
+            if (!currentRange) return;
+            try {
+                const span = document.createElement('span');
+                span.className = 'highlight';
+                span.setAttribute('data-note', '');
+                currentRange.surroundContents(span);
+                window.getSelection().removeAllRanges();
+            } catch { alert('⚠️ Please select smaller sections of text.'); }
         });
 
         // Add Note
         document.getElementById('menuAddNote').addEventListener('click', function() {
-            noteBox.style.left = (parseInt(contextMenu.style.left) + 20) + 'px';
-            noteBox.style.top = contextMenu.style.top;
-            noteBox.style.display = 'block';
-            document.getElementById('noteText').focus();
             contextMenu.style.display = 'none';
+            if (!activeHighlight && currentRange) {
+                try {
+                    const span = document.createElement('span');
+                    span.className = 'highlight';
+                    span.setAttribute('data-note', '');
+                    currentRange.surroundContents(span);
+                    activeHighlight = span;
+                    window.getSelection().removeAllRanges();
+                } catch { alert('⚠️ Please select smaller sections of text.'); return; }
+            }
+            if (!activeHighlight) return;
+            const rect = activeHighlight.getBoundingClientRect();
+            noteBox.style.left = Math.min(rect.right + 10, window.innerWidth - 280) + 'px';
+            noteBox.style.top = Math.min(rect.top, window.innerHeight - 100) + 'px';
+            noteBox.style.display = 'block';
+            noteText.value = activeHighlight.getAttribute('data-note') || '';
+            noteText.focus();
+        });
+
+        // Remove Highlight
+        document.getElementById('menuRemove').addEventListener('click', function() {
+            contextMenu.style.display = 'none';
+            if (!activeHighlight) return;
+            const parent = activeHighlight.parentNode;
+            while (activeHighlight.firstChild) {
+                parent.insertBefore(activeHighlight.firstChild, activeHighlight);
+            }
+            parent.removeChild(activeHighlight);
+            parent.normalize();
+            activeHighlight = null;
         });
 
         // Close Note Box
-        document.getElementById('noteClose').addEventListener('click', function() {
+        noteClose.addEventListener('click', function() {
+            if (activeHighlight) {
+                activeHighlight.setAttribute('data-note', noteText.value);
+            }
             noteBox.style.display = 'none';
-            document.getElementById('noteText').value = '';
+            noteText.value = '';
+            activeHighlight = null;
         });
 
         // Make Note Box Draggable
-        let isDragging = false, dragOffsetX, dragOffsetY;
+        let isDraggingNote = false, noteOffsetX = 0, noteOffsetY = 0;
         document.getElementById('noteDragHandle').addEventListener('mousedown', function(e) {
-            isDragging = true;
-            dragOffsetX = e.clientX - noteBox.getBoundingClientRect().left;
-            dragOffsetY = e.clientY - noteBox.getBoundingClientRect().top;
+            isDraggingNote = true;
+            const rect = noteBox.getBoundingClientRect();
+            noteOffsetX = e.clientX - rect.left;
+            noteOffsetY = e.clientY - rect.top;
         });
         document.addEventListener('mousemove', function(e) {
-            if (isDragging) {
-                noteBox.style.left = (e.clientX - dragOffsetX) + 'px';
-                noteBox.style.top = (e.clientY - dragOffsetY) + 'px';
-            }
+            if (!isDraggingNote) return;
+            let newX = e.clientX - noteOffsetX;
+            let newY = e.clientY - noteOffsetY;
+            newX = Math.max(0, Math.min(newX, window.innerWidth - 260));
+            newY = Math.max(0, Math.min(newY, window.innerHeight - 80));
+            noteBox.style.left = newX + 'px';
+            noteBox.style.top = newY + 'px';
         });
-        document.addEventListener('mouseup', function() { isDragging = false; });
+        document.addEventListener('mouseup', function() { isDraggingNote = false; });
+
 
         // Update Question Status & Save Answers
         function updateQuestionStatus() {
