@@ -486,7 +486,7 @@ style="margin-bottom:12px;"><strong>Do the following statements agree with the i
         const noteClose = document.getElementById('noteClose');
         const contextMenu = document.getElementById('contextMenu');
         let currentRange = null, activeHighlight = null;
-        const highlightAreas = ['passageArea'];
+        const highlightAreas = ['passageArea', 'questionsPane'];
 
         function isInHighlightArea(node) {
             return highlightAreas.some(id => {
