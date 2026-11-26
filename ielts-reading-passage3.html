@@ -525,7 +525,7 @@ style="margin-bottom:12px;"><strong>Do the following statements agree with the i
         });
 
         // Remove Highlight
-        document.getElementById('menuRemoveHighlight').addEventListener('click', function() {
+        document.getElementById('menuRemove').addEventListener('click', function() {
             document.querySelectorAll('.highlight').forEach(function(el) {
                 const parent = el.parentNode;
                 parent.insertBefore(document.createTextNode(el.textContent), el);
